@@ -154,8 +154,8 @@ def test_function():
     # starting at this line:
     #     "elif token_type == tokenize.STRING:"
     # This tests remove_extraneous_spaces():
-    this_line_has_leading_indentation = '''<--That extraneous space should be
-                                              removed'''  # But not these spaces
+    this_line_has_leading_indentation    = '''<--That extraneous space should be
+                                              removed''' # But not these spaces
 
 
 def is_iterable(obj):
@@ -289,8 +289,11 @@ def pyminify(options, files):
             print(((
                 "{sourcefile} ({filesize}) reduced to {new_filesize} bytes "
                 "({percent_saved}% of original size)").format(**locals())))
-        p_saved = round(
-            (float(cumulative_new) / float(cumulative_size) * 100), 2)
+        if cumulative_size:
+            p_saved = round(
+                (float(cumulative_new) / float(cumulative_size) * 100), 2)
+        else:
+            p_saved = 0
         print("Overall size reduction: {0}% of original size".format(p_saved))
     else:
         # Get the module name from the path
