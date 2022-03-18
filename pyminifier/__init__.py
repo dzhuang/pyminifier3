@@ -73,7 +73,7 @@ import re
 import io
 
 from optparse import OptionParser
-from collections import Iterable
+from collections.abc import Iterable
 
 # Import our own modules
 from . import minification
