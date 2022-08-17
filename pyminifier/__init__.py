@@ -5,12 +5,12 @@
 # For license information see LICENSE.txt
 
 # Meta
-__version__ = '2.3'
+__version__ = "2.3"
 __version_info__ = (2, 3)
 __license__ = "GPLv3"  # See LICENSE.txt
 __author__ = (
-    'Dan McDougall <daniel.mcdougall@liftoffsoftware.com>,'
-    'Dong Zhuang <dzhuang.scut@gmail.com>')
+    "Dan McDougall <daniel.mcdougall@liftoffsoftware.com>,"
+    "Dong Zhuang <dzhuang.scut@gmail.com>")
 
 # TODO: Add the ability to mark variables, functions, classes, and methods
 #       for non-obfuscation.
@@ -120,11 +120,11 @@ try:
 except ImportError:
     pass
 
-# define the name of the operating system 'nt'- windows
+# define the name of the operating system "nt"- windows
 os_name = os.name
 
 # Regexes
-multiline_indicator = re.compile('\\\\(\s*#.*)?\n')  # noqa
+multiline_indicator = re.compile("\\\\(\s*#.*)?\n")  # noqa
 
 # The test.+() functions below are for testing pyminifier...
 
@@ -143,12 +143,12 @@ def test_reduce_operators():
 def test_empty_functions():
     """
     This is a test function.
-    This should be replaced with 'def test_empty_functions(): pass'
+    This should be replaced with "def test_empty_functions(): pass"
     """
 
 
 class test_class(object):
-    "Testing indented decorators"
+    """Testing indented decorators"""
 
     @test_decorator
     def test_function(self):
@@ -166,14 +166,14 @@ def test_function():
     foo = ("The # character in this string should "  # This comment  # noqa
            "not result in a syntax error")  # ...and this one should go away  # noqa
     test_multi_line_list = [  # noqa
-        'item1',
-        'item2',
-        'item3'
+        "item1",
+        "item2",
+        "item3"
     ]
     test_multi_line_dict = {  # noqa
-        'item1': 1,
-        'item2': 2,
-        'item3': 3
+        "item1": 1,
+        "item2": 2,
+        "item3": 3
     }
     # It may seem strange but the code below tests our docstring removal code.
     test_string_inside_operators = imaginary_function(  # noqa
@@ -183,8 +183,8 @@ def test_function():
     # starting at this line:
     #     "elif token_type == tokenize.STRING:"
     # This tests remove_extraneous_spaces():
-    this_line_has_leading_indentation    = '''<--That extraneous space should be
-                                              removed'''  # But not these spaces  # noqa
+    this_line_has_leading_indentation    = """<--That extraneous space should be
+                                              removed"""  # But not these spaces  # noqa
 
 
 def is_iterable(obj):
@@ -257,7 +257,7 @@ def pyminify(options, files):
             cumulative_size += filesize
             # Get the module name from the path
             module = os.path.split(sourcefile)[1]
-            module = ".".join(module.split('.')[:-1])
+            module = ".".join(module.split(".")[:-1])
             with open(sourcefile, encoding="utf-8") as _f:
                 source = _f.read()
             tokens = token_utils.listified_tokenizer(source)
@@ -275,7 +275,7 @@ def pyminify(options, files):
                     table=table
                 )
             # Convert back to text
-            result = '# -*- coding: utf-8 -*-\n'
+            result = "# -*- coding: utf-8 -*-\n"
             if prepend:
                 result += prepend
             result += token_utils.untokenize(tokens)
@@ -292,8 +292,8 @@ def pyminify(options, files):
                 os.mkdir(options.destdir)
             # Need the path where the script lives for the next steps:
             filepath = os.path.split(sourcefile)[1]
-            path = options.destdir + '/' + filepath  # Put everything in destdir
-            with open(path, 'w', encoding='utf-8') as f:
+            path = options.destdir + "/" + filepath  # Put everything in destdir
+            with open(path, "w", encoding="utf-8") as f:
                 f.write(result)
             new_filesize = os.path.getsize(path)
             cumulative_new += new_filesize
@@ -302,7 +302,7 @@ def pyminify(options, files):
                 if int(filesize) != 0 else 0)
             print(
                 "{sourcefile} ({filesize}) reduced to {new_filesize} bytes "
-                "({percent_saved}% of original size)").format(**locals())
+                "({percent_saved}% of original size)".format(**locals()))
         if cumulative_size:
             p_saved = round(
                 (float(cumulative_new) / float(cumulative_size) * 100), 2)
@@ -313,9 +313,9 @@ def pyminify(options, files):
         # Get the module name from the path
         _file = files[0]
         module = os.path.split(_file)[1]
-        module = ".".join(module.split('.')[:-1])
+        module = ".".join(module.split(".")[:-1])
         filesize = os.path.getsize(_file)
-        with open(_file, encoding='utf-8') as f:
+        with open(_file, encoding="utf-8") as f:
             source = f.read()
 
         # Convert the tokens from a tuple of tuples to a list of lists so we can
@@ -334,7 +334,7 @@ def pyminify(options, files):
                 identifier_length=identifier_length)
             obfuscate.obfuscate(module, tokens, options)
         # Convert back to text
-        result = ''
+        result = ""
         if prepend:
             result += prepend
         result += token_utils.untokenize(tokens)
@@ -348,7 +348,7 @@ def pyminify(options, files):
         result += "{}\n".format(constants.RESULT_FOOTER)
         # Either save the result to the output file or print it to stdout
         if options.outfile:
-            with io.open(options.outfile, 'w', encoding='utf-8') as f:
+            with io.open(options.outfile, "w", encoding="utf-8") as f:
                 f.write(result)
             new_filesize = os.path.getsize(options.outfile)
             percent_saved = (

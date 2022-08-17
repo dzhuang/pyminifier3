@@ -13,25 +13,25 @@ maindir = os.path.dirname(testdir)
 class TestPyMinify(unittest.TestCase):
     def setUp(self):
         self._testdir = tempfile.mkdtemp()
-        self.testdir = os.path.join(self._testdir, 'pyminifier')
+        self.testdir = os.path.join(self._testdir, "pyminifier")
         os.mkdir(self.testdir)
-        self.sourcedir = os.path.join(maindir, 'pyminifier')
+        self.sourcedir = os.path.join(maindir, "pyminifier")
 
     def minimy_file(self, inpath, cwd):
         proc = subprocess.Popen(
-            ['pyminifier', inpath], cwd=cwd, stdout=subprocess.PIPE)
+            ["pyminifier", inpath], cwd=cwd, stdout=subprocess.PIPE)
         data, err = proc.communicate()
         assert err is None
         return data
 
     def test_minify_self(self):
         """
-        Test if a minified version of 'pyminifier' returns the same results as
+        Test if a minified version of "pyminifier" returns the same results as
         the original one
         """
         sourcefiles = [
             filename for filename
-            in os.listdir(self.sourcedir) if filename.endswith('.py')]
+            in os.listdir(self.sourcedir) if filename.endswith(".py")]
         results = {}
 
         for filename in sourcefiles:
@@ -40,7 +40,7 @@ class TestPyMinify(unittest.TestCase):
             data = self.minimy_file(source, maindir)
             results[filename] = data
 
-            with open(dest, 'wb') as destfile:
+            with open(dest, "wb") as destfile:
                 destfile.write(data)
 
         for filename in sourcefiles:
@@ -55,5 +55,5 @@ class TestPyMinify(unittest.TestCase):
         shutil.rmtree(self.testdir)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

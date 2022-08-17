@@ -10,7 +10,7 @@ setup(
     author_email="daniel.mcdougall@liftoffsoftware.com, dzhuang.scut@gmail.com",
     url="https://github.com/dzhuang/pyminifier3",
     license="Proprietary",
-    packages=['pyminifier'],
+    packages=["pyminifier"],
     classifiers=[
         "Environment :: Console",
         "Intended Audience :: Developers",
@@ -20,10 +20,10 @@ setup(
         "Topic :: Software Development :: Build Tools",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
-    provides=['pyminifier'],
+    provides=["pyminifier"],
     entry_points={
-        'console_scripts': [
-            'pyminifier = pyminifier.__main__:main'
+        "console_scripts": [
+            "pyminifier = pyminifier.__main__:main"
         ],
     },
     test_suite="tests",

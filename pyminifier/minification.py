@@ -5,7 +5,6 @@ Module for minification functions.
 """
 
 import io
-# import keyword
 # Import built-in modules
 import re
 import tokenize
@@ -14,11 +13,11 @@ import tokenize
 from . import analyze, token_utils
 
 # Compile our regular expressions for speed
-multiline_quoted_string = re.compile(r'(\'\'\'|\"\"\")')
-not_quoted_string = re.compile(r'(\".*\'\'\'.*\"|\'.*\"\"\".*\')')
-trailing_newlines = re.compile(r'\n\n')
-multiline_indicator = re.compile('\\\\(\s*#.*)?\n')  # noqa
-left_of_equals = re.compile('^.*?=')
+multiline_quoted_string = re.compile(r"(\'\'\'|\"\"\")")
+not_quoted_string = re.compile(r"(\".*\'\'\'.*\"|\'.*\"\"\".*\')")
+trailing_newlines = re.compile(r"\n\n")
+multiline_indicator = re.compile("\\\\(\s*#.*)?\n")  # noqa
+left_of_equals = re.compile("^.*?=")
 # The above also removes trailing comments: "test = 'blah \ # comment here"
 
 # These aren't used but they're a pretty good reference:
@@ -57,12 +56,12 @@ def remove_comments(tokens):
     for index, tok in enumerate(tokens):
         token_type = tok[0]
         if token_type == tokenize.COMMENT:
-            tokens[index][1] = ''  # Making it an empty string removes it
+            tokens[index][1] = ""  # Making it an empty string removes it
 
         # TODO: Figure out a way to make this work
         # elif prev_tok_type == tokenize.COMMENT:
             # if token_type == tokenize.NL:
-            #     tokens[index][1] = ''  # Remove trailing newline
+            #     tokens[index][1] = ""  # Remove trailing newline
         # prev_tok_type = token_type
 
     # Prepend our preserved items back into the token list:
@@ -86,16 +85,16 @@ def remove_docstrings(tokens):
         if token_type == tokenize.STRING:
             if prev_tok_type == tokenize.INDENT:
                 # Definitely a docstring
-                tokens[index][1] = ''  # Remove it
+                tokens[index][1] = ""  # Remove it
                 # Remove the leftover indentation and newline:
-                tokens[index-1][1] = ''
-                tokens[index-2][1] = ''
+                tokens[index-1][1] = ""
+                tokens[index-2][1] = ""
             elif prev_tok_type == tokenize.NL:
                 # This captures whole-module docstrings:
                 if tokens[index+1][0] == tokenize.NEWLINE:
-                    tokens[index][1] = ''
+                    tokens[index][1] = ""
                     # Remove the trailing newline:
-                    tokens[index+1][1] = ''
+                    tokens[index+1][1] = ""
         prev_tok_type = token_type
 
 
@@ -221,15 +220,15 @@ def reduce_operators(source):
                     else:
                         new_string += token_string.strip(string_type)
         else:
-            if token_string in ('}', ')', ']'):
-                if prev_tok and prev_tok[1] == ',':
-                    out = out.rstrip(',')
+            if token_string in ("}", ")", "]"):
+                if prev_tok and prev_tok[1] == ",":
+                    out = out.rstrip(",")
             if joining_strings:
                 # NOTE: Using triple quotes so that this logic works with
                 # mixed strings using both single quotes and double quotes.
                 out += "'''" + new_string + "'''"
                 joining_strings = False
-            if token_string == '@':  # Decorators need special handling
+            if token_string == "@":  # Decorators need special handling
                 if prev_tok and prev_tok[0] == tokenize.NEWLINE:
                     # Ensure it gets indented properly
                     out += (" " * (start_col - last_col))
@@ -303,9 +302,9 @@ def dedent(source, use_tabs=False):
          test = "This is a test"
     """
     if use_tabs:
-        indent_char = '\t'
+        indent_char = "\t"
     else:
-        indent_char = ' '
+        indent_char = " "
     io_obj = io.StringIO(source)
     out = ""
     last_lineno = -1
@@ -328,7 +327,7 @@ def dedent(source, use_tabs=False):
             continue
         indentation = indent_char * indentation_level
         if start_line > prev_start_line:
-            if token_string in (',', '.'):
+            if token_string in (",", "."):
                 out += str(token_string)
             else:
                 out += indentation + str(token_string)
@@ -345,7 +344,7 @@ def dedent(source, use_tabs=False):
 # TODO:  Rewrite this to use tokens
 def fix_empty_methods(source):
     """
-    Appends 'pass' to empty methods/functions (i.e. where there was nothing but
+    Appends "pass" to empty methods/functions (i.e. where there was nothing but
     a docstring before we removed it =).
 
     Example::
@@ -363,13 +362,13 @@ def fix_empty_methods(source):
     output = ""
     just_matched = False
     previous_line = None
-    method = re.compile(r'^\s*def\s*.*\(.*\):.*$')
-    for line in source.split('\n'):
+    method = re.compile(r"^\s*def\s*.*\(.*\):.*$")
+    for line in source.split("\n"):
         if len(line.strip()) > 0:  # Don't look at blank lines
             if just_matched:
                 this_indentation_level = len(line.rstrip()) - len(line.strip())
                 if def_indentation_level == this_indentation_level:
-                    # This method is empty, insert a 'pass' statement
+                    # This method is empty, insert a "pass" statement
                     indent = " " * (def_indentation_level + 1)
                     output += "%s\n%spass\n%s\n" % (previous_line, indent, line)
                 else:
@@ -420,11 +419,11 @@ def minify(tokens, options):
     remove_docstrings(tokens)
     result = token_utils.untokenize(tokens)
     # Minify our input script
-    result = multiline_indicator.sub('', result)
+    result = multiline_indicator.sub("", result)
     result = fix_empty_methods(result)
     result = join_multiline_pairs(result)
-    result = join_multiline_pairs(result, '[]')
-    result = join_multiline_pairs(result, '{}')
+    result = join_multiline_pairs(result, "[]")
+    result = join_multiline_pairs(result, "{}")
     result = remove_blank_lines(result)
     result = reduce_operators(result)
     result = dedent(result, use_tabs=options.tabs)

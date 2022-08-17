@@ -85,7 +85,8 @@ arguments:
 For the examples below we'll be minifying, obfuscating, and compressing the
 following totally made-up Python script (saved to ``/tmp/tumult.py``)::
 
-    #!/usr/bin/env python
+.. code-block:: python
+    #!/usr/bin/env python3
     """
     tumult.py - Because everyone needs a little chaos every now and again.
     """
@@ -100,7 +101,8 @@ following totally made-up Python script (saved to ``/tmp/tumult.py``)::
         print("Warning: Dark voodoo may be unreliable.")
 
     # Globals
-    ATLAS = False # Nothing holds up the world by default
+    ATLAS = False  # Nothing holds up the world by default
+
 
     class Foo(object):
         """
@@ -119,7 +121,7 @@ following totally made-up Python script (saved to ``/tmp/tumult.py``)::
             """
             A vainglorious implementation of bedizenment.
             """
-            inception = demiurgic.palpitation(dactyl) # Note the imported call
+            inception = demiurgic.palpitation(dactyl)  # Note the imported call
             demarcation = mystificate.dark_voodoo(inception)
             return demarcation
 
@@ -129,10 +131,12 @@ following totally made-up Python script (saved to ``/tmp/tumult.py``)::
             """
             print(whatever)
 
+
     if __name__ == "__main__":
         print("Forming...")
         f = Foo("epicaricacy", "perseverate")
         f.test("Codswallop")
+
 
 By default pyminifier will perform basic minification and print the resulting
 code to stdout:
@@ -142,7 +146,7 @@ code to stdout:
 .. code-block:: sh
 
     $ pyminifier /tmp/tumult.py
-    #!/usr/bin/env python
+    #!/usr/bin/env python3
     try:
      import demiurgic
     except ImportError:
@@ -165,7 +169,7 @@ code to stdout:
      print("Forming...")
      f=Foo("epicaricacy","perseverate")
      f.test("Codswallop")
-    # Created by pyminifier.py
+    # Created by pyminifier (https://github.com/dzhuang/pyminifier3)
 
 This reduced the size of tumult.py from 1358 bytes to 640 bytes.  Not bad!
 
