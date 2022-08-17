@@ -34,13 +34,13 @@ files.  To pack a number of files at once using this method use the
 
     - Provides the best compression of Python scripts.
     - Resulting script cannot be imported as a module.
-    - Any required modules that are local (implied path) will be automatically included in the archive.
+    - Any required modules that are local (implied path) will be automatically
+      included in the archive.
 """
 
 # Import standard library modules
 import os
 import shutil
-import sys
 import tempfile
 
 # Import our own supporting modules
@@ -63,9 +63,9 @@ def bz2_pack(source):
     # Preserve shebangs (don't care about encodings for this)
     first_line = source.split('\n')[0]
     if analyze.shebang.match(first_line):
-        if first_line.rstrip().endswith('python'): # Make it python3
+        if first_line.rstrip().endswith('python'):  # Make it python3
             first_line = first_line.rstrip()
-            first_line += '3' #!/usr/bin/env python3
+            first_line += '3'  # #!/usr/bin/env python3
         out = first_line + '\n'
     compressed_source = bz2.compress(source.encode('utf-8'))
     out += 'import bz2, base64\n'
@@ -73,6 +73,7 @@ def bz2_pack(source):
     out += base64.b64encode(compressed_source).decode('utf-8')
     out += "')))\n"
     return out
+
 
 def gz_pack(source):
     """
@@ -90,9 +91,9 @@ def gz_pack(source):
     # Preserve shebangs (don't care about encodings for this)
     first_line = source.split('\n')[0]
     if analyze.shebang.match(first_line):
-        if first_line.rstrip().endswith('python'): # Make it python3
+        if first_line.rstrip().endswith('python'):  # Make it python3
             first_line = first_line.rstrip()
-            first_line += '3' #!/usr/bin/env python3
+            first_line += '3'  # #!/usr/bin/env python3
         out = first_line + '\n'
     compressed_source = zlib.compress(source.encode('utf-8'))
     out += 'import zlib, base64\n'
@@ -100,6 +101,7 @@ def gz_pack(source):
     out += base64.b64encode(compressed_source).decode('utf-8')
     out += "')))\n"
     return out
+
 
 def lzma_pack(source):
     """
@@ -117,9 +119,9 @@ def lzma_pack(source):
     # Preserve shebangs (don't care about encodings for this)
     first_line = source.split('\n')[0]
     if analyze.shebang.match(first_line):
-        if first_line.rstrip().endswith('python'): # Make it python3
+        if first_line.rstrip().endswith('python'):  # Make it python3
             first_line = first_line.rstrip()
-            first_line += '3' #!/usr/bin/env python3
+            first_line += '3'  # #!/usr/bin/env python3
         out = first_line + '\n'
     compressed_source = lzma.compress(source.encode('utf-8'))
     out += 'import lzma, base64\n'
@@ -127,6 +129,7 @@ def lzma_pack(source):
     out += base64.b64encode(compressed_source).decode('utf-8')
     out += "')))\n"
     return out
+
 
 def prepend(line, path):
     """
@@ -139,7 +142,7 @@ def prepend(line, path):
     if not line.endswith(b'\n'):
         line += b'\n'
     temp = tempfile.NamedTemporaryFile('wb')
-    temp_name = temp.name # We really only need a random path-safe name
+    temp_name = temp.name  # We really only need a random path-safe name
     temp.close()
     with open(temp_name, 'wb') as temp:
         temp.write(line)
@@ -147,6 +150,7 @@ def prepend(line, path):
             temp.write(r.read())
     # Now replace the original with the modified version
     shutil.move(temp_name, path)
+
 
 def zip_pack(filepath, options):
     """
@@ -163,16 +167,19 @@ def zip_pack(filepath, options):
 
     .. note::
 
-        * The file resulting from this method cannot be imported as a module into another python program (command line execution only).
-        * Any required local (implied path) modules will be automatically included (well, it does its best).
-        * The result will be saved as a .pyz file (which is an extension I invented for this format).
+        * The file resulting from this method cannot be imported as a module into
+          another python program (command line execution only).
+        * Any required local (implied path) modules will be automatically
+          included (well, it does its best).
+        * The result will be saved as a .pyz file (which is an extension
+          I invented for this format).
     """
     import zipfile
 
     # Hopefully some day we'll be able to use ZIP_LZMA too as the compression
     # format to save even more space...
     compression_format = zipfile.ZIP_DEFLATED
-    cumulative_size = 0 # For tracking size reduction stats
+    cumulative_size = 0  # For tracking size reduction stats
     # Record the filesize for later comparison
     cumulative_size += os.path.getsize(filepath)
     dest = options.pyz
@@ -186,12 +193,12 @@ def zip_pack(filepath, options):
     # Preserve shebangs (don't care about encodings for this)
     shebang = analyze.get_shebang(primary_tokens)
     if not shebang:
-    # We *must* have a shebang for this to work so make a conservative default:
+        # We *must* have a shebang for this to work so make a conservative default:
         shebang = "#!/usr/bin/env python"
-    if shebang.rstrip().endswith('python'): # Make it python3 (to be safe)
+    if shebang.rstrip().endswith('python'):  # Make it python3 (to be safe)
         shebang = shebang.rstrip()
-        shebang += '3\n' #!/usr/bin/env python3
-    if not options.nominify: # Minify as long as we don't have this option set
+        shebang += '3\n'  # #!/usr/bin/env python3
+    if not options.nominify:  # Minify as long as we don't have this option set
         source = minification.minify(primary_tokens, options)
     # Write out to a temporary file to add to our zip
     temp = tempfile.NamedTemporaryFile(mode='w')
@@ -213,15 +220,15 @@ def zip_pack(filepath, options):
     temp.close()
     # Now write any required modules into the zip as well
     local_modules = analyze.enumerate_local_modules(primary_tokens, path)
-    name_generator = None # So we can tell if we need to obfuscate
-    if options.obfuscate or options.obf_classes \
-        or options.obf_functions or options.obf_variables \
-        or options.obf_builtins or options.obf_import_methods:
+    name_generator = None  # So we can tell if we need to obfuscate
+    if (options.obfuscate or options.obf_classes
+            or options.obf_functions or options.obf_variables
+            or options.obf_builtins or options.obf_import_methods):
         # Put together that will be used for all obfuscation functions:
         identifier_length = int(options.replacement_length)
         name_generator = obfuscate.obfuscation_machine(
             identifier_length=identifier_length)
-        table =[{}]
+        table = [{}]
     included_modules = []
     for module in local_modules:
         module = module.replace('.', '/')
@@ -237,7 +244,7 @@ def zip_pack(filepath, options):
         maybe_more_modules = analyze.enumerate_local_modules(tokens, path)
         for mod in maybe_more_modules:
             if mod not in local_modules:
-                local_modules.append(mod) # Extend the current loop, love it =)
+                local_modules.append(mod)  # Extend the current loop, love it =)
         if not options.nominify:
             # Perform minification (this also handles obfuscation)
             source = minification.minify(tokens, options)
@@ -266,7 +273,7 @@ def zip_pack(filepath, options):
     z.close()
     # Finish up by writing the shebang to the beginning of the zip
     prepend(shebang, dest)
-    os.chmod(dest, 0o755) # Make it executable (since we added the shebang)
+    os.chmod(dest, 0o755)  # Make it executable (since we added the shebang)
     pyz_filesize = os.path.getsize(dest)
     percent_saved = round(float(pyz_filesize) / float(cumulative_size) * 100, 2)
     print('%s saved as compressed executable zip: %s' % (filepath, dest))

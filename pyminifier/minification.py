@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-__doc__ = """\
+__doc__ = """
 Module for minification functions.
 """
 
 import io
-import keyword
+# import keyword
 # Import built-in modules
 import re
 import tokenize
@@ -17,7 +17,7 @@ from . import analyze, token_utils
 multiline_quoted_string = re.compile(r'(\'\'\'|\"\"\")')
 not_quoted_string = re.compile(r'(\".*\'\'\'.*\"|\'.*\"\"\".*\')')
 trailing_newlines = re.compile(r'\n\n')
-multiline_indicator = re.compile('\\\\(\s*#.*)?\n')
+multiline_indicator = re.compile('\\\\(\s*#.*)?\n')  # noqa
 left_of_equals = re.compile('^.*?=')
 # The above also removes trailing comments: "test = 'blah \ # comment here"
 
@@ -27,6 +27,7 @@ single_quoted_string = re.compile(r"((?<!\\)'.*?(?<!\\)')")
 single_line_single_quoted_string = re.compile(r"((?<!\\)'''.*?(?<!\\)''')")
 single_line_double_quoted_string = re.compile(r'((?<!\\)""".*?(?<!\\)""")')
 
+
 def remove_comments(tokens):
     """
     Removes comments from *tokens* which is expected to be a list equivalent of
@@ -34,41 +35,45 @@ def remove_comments(tokens):
 
     .. note::
 
-        * If the comment makes up the whole line, the newline will also be removed (so you don't end up with lots of blank lines).
+        * If the comment makes up the whole line, the newline will also be removed
+          (so you don't end up with lots of blank lines).
         * Preserves shebangs and encoding strings.
     """
     preserved_shebang = ""
     preserved_encoding = ""
     # This (short) loop preserves shebangs and encoding strings:
-    for tok in tokens[0:4]: # Will always be in the first four tokens
+    for tok in tokens[0:4]:  # Will always be in the first four tokens
         line = tok[4]
         # Save the first comment line if it starts with a shebang
         # (e.g. '#!/usr/bin/env python')
-        if analyze.shebang.match(line): # Must be first line
+        if analyze.shebang.match(line):  # Must be first line
             preserved_shebang = line
         # Save the encoding string (must be first or second line in file)
         # (e.g. '# -*- coding: utf-8 -*-')
         elif analyze.encoding.match(line):
             preserved_encoding = line
     # Now remove comments:
-    prev_tok_type = 0
+    # prev_tok_type = 0
     for index, tok in enumerate(tokens):
         token_type = tok[0]
         if token_type == tokenize.COMMENT:
-            tokens[index][1] = '' # Making it an empty string removes it
+            tokens[index][1] = ''  # Making it an empty string removes it
+
         # TODO: Figure out a way to make this work
-        #elif prev_tok_type == tokenize.COMMENT:
-            #if token_type == tokenize.NL:
-                #tokens[index][1] = '' # Remove trailing newline
-        prev_tok_type = token_type
+        # elif prev_tok_type == tokenize.COMMENT:
+            # if token_type == tokenize.NL:
+            #     tokens[index][1] = ''  # Remove trailing newline
+        # prev_tok_type = token_type
+
     # Prepend our preserved items back into the token list:
-    if preserved_shebang: # Have to re-tokenize them
+    if preserved_shebang:  # Have to re-tokenize them
         io_obj = io.StringIO(preserved_shebang + preserved_encoding)
         preserved = [list(a) for a in tokenize.generate_tokens(io_obj.readline)]
-        preserved.pop() # Get rid of ENDMARKER
-        preserved.reverse() # Round and round we go!
+        preserved.pop()  # Get rid of ENDMARKER
+        preserved.reverse()  # Round and round we go!
         for item in preserved:
             tokens.insert(0, item)
+
 
 def remove_docstrings(tokens):
     """
@@ -81,7 +86,7 @@ def remove_docstrings(tokens):
         if token_type == tokenize.STRING:
             if prev_tok_type == tokenize.INDENT:
                 # Definitely a docstring
-                tokens[index][1] = '' # Remove it
+                tokens[index][1] = ''  # Remove it
                 # Remove the leftover indentation and newline:
                 tokens[index-1][1] = ''
                 tokens[index-2][1] = ''
@@ -92,6 +97,7 @@ def remove_docstrings(tokens):
                     # Remove the trailing newline:
                     tokens[index+1][1] = ''
         prev_tok_type = token_type
+
 
 def remove_comments_and_docstrings(source):
     """
@@ -132,7 +138,8 @@ def remove_comments_and_docstrings(source):
         # This series of conditionals removes docstrings:
         elif token_type == tokenize.STRING:
             if prev_toktype != tokenize.INDENT:
-        # This is likely a docstring; double-check we're not inside an operator:
+                # This is likely a docstring; double-check we're not
+                # inside an operator:
                 if prev_toktype != tokenize.NEWLINE:
                     # Note regarding NEWLINE vs NL: The tokenize module
                     # differentiates between newlines that start a new statement
@@ -159,6 +166,7 @@ def remove_comments_and_docstrings(source):
         last_lineno = end_line
     return out
 
+
 def reduce_operators(source):
     """
     Remove spaces between operators in *source* and returns the result.
@@ -179,7 +187,7 @@ def reduce_operators(source):
     """
     io_obj = io.StringIO(source)
     prev_tok = None
-    out_tokens = []
+    # out_tokens = []
     out = ""
     last_lineno = -1
     last_col = 0
@@ -200,9 +208,9 @@ def reduce_operators(source):
             if token_type == tokenize.STRING:
                 if prev_tok and prev_tok[0] == tokenize.STRING:
                     # Join the strings into one
-                    string_type = token_string[0] # '' or ""
+                    string_type = token_string[0]  # '' or ""
                     prev_string_type = prev_tok[1][0]
-                    out = out.rstrip(" ") # Remove any spaces we inserted prev
+                    out = out.rstrip(" ")  # Remove any spaces we inserted prev
                     if not joining_strings:
                         # Remove prev token and start the new combined string
                         out = out[:(len(out)-len(prev_tok[1]))]
@@ -221,7 +229,7 @@ def reduce_operators(source):
                 # mixed strings using both single quotes and double quotes.
                 out += "'''" + new_string + "'''"
                 joining_strings = False
-            if token_string == '@': # Decorators need special handling
+            if token_string == '@':  # Decorators need special handling
                 if prev_tok and prev_tok[0] == tokenize.NEWLINE:
                     # Ensure it gets indented properly
                     out += (" " * (start_col - last_col))
@@ -231,6 +239,7 @@ def reduce_operators(source):
         last_lineno = end_line
         prev_tok = tok
     return out
+
 
 def join_multiline_pairs(source, pair="()"):
     """
@@ -253,7 +262,7 @@ def join_multiline_pairs(source, pair="()"):
 
     Will become::
 
-        test = (            "This is inside a multi-line pair of parentheses"        )
+        test = (           "This is inside a multi-line pair of parentheses"        )
 
     """
     opener = pair[0]
@@ -276,6 +285,7 @@ def join_multiline_pairs(source, pair="()"):
         else:
             out_tokens.append(tok)
     return token_utils.untokenize(out_tokens)
+
 
 def dedent(source, use_tabs=False):
     """
@@ -301,7 +311,7 @@ def dedent(source, use_tabs=False):
     last_lineno = -1
     last_col = 0
     prev_start_line = 0
-    indentation = ""
+    # indentation = ""
     indentation_level = 0
     for i, tok in enumerate(tokenize.generate_tokens(io_obj.readline)):
         token_type = tok[0]
@@ -331,6 +341,7 @@ def dedent(source, use_tabs=False):
         last_lineno = end_line
     return out
 
+
 # TODO:  Rewrite this to use tokens
 def fix_empty_methods(source):
     """
@@ -354,8 +365,8 @@ def fix_empty_methods(source):
     previous_line = None
     method = re.compile(r'^\s*def\s*.*\(.*\):.*$')
     for line in source.split('\n'):
-        if len(line.strip()) > 0: # Don't look at blank lines
-            if just_matched == True:
+        if len(line.strip()) > 0:  # Don't look at blank lines
+            if just_matched:
                 this_indentation_level = len(line.rstrip()) - len(line.strip())
                 if def_indentation_level == this_indentation_level:
                     # This method is empty, insert a 'pass' statement
@@ -369,10 +380,11 @@ def fix_empty_methods(source):
                 just_matched = True
                 previous_line = line
             else:
-                output += "%s\n" % line # Another self-test
+                output += "%s\n" % line  # Another self-test
         else:
             output += "\n"
     return output
+
 
 def remove_blank_lines(source):
     """
@@ -396,6 +408,7 @@ def remove_blank_lines(source):
     io_obj = io.StringIO(source)
     source = [a for a in io_obj.readlines() if a.strip()]
     return "".join(source)
+
 
 def minify(tokens, options):
     """

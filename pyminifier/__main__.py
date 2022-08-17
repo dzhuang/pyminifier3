@@ -1,3 +1,5 @@
+import fnmatch
+import os
 import sys
 from optparse import OptionParser
 
@@ -9,33 +11,32 @@ try:
 except ImportError:
     pass
 
-import fnmatch
-import os
-import re
 
-
-#------------------------------------------------------------------------------
-def getsubs(dir):
-    '''Returns lists of files and folders located in the folder dir'''
+# ------------------------------------------------------------------------------
+def getsubs(_dir):
+    """Returns lists of files and folders located in the folder dir"""
     # get all
     dirs = []
     files = []
-    for dirname, dirnames, filenames in os.walk(dir):
+    for dirname, dirnames, filenames in os.walk(_dir):
         dirs.append(dirname)
         for subdirname in dirnames:
             dirs.append(os.path.join(dirname, subdirname))
         for filename in filenames:
             files.append(os.path.join(dirname, filename))
     return dirs, files
-#------------------------------------------------------------------------------
-def getfilemask(f,mask):
-    '''Returns a file list from a list of files mask satisfying f'''
-    tt=[]
+
+
+# ------------------------------------------------------------------------------
+def getfilemask(f, mask):
+    """Returns a file list from a list of files mask satisfying f"""
+    tt = []
     for i in f:
-        if fnmatch.fnmatch(i,mask):
+        if fnmatch.fnmatch(i, mask):
             tt.append(i)
     return tt
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+
 
 def main():
     """
@@ -43,7 +44,7 @@ def main():
     runs :py:func:`pyminifier.pyminify` with the given command line options.
     """
     usage = '%prog [options] "<input file>"'
-    if '__main__.py' in sys.argv[0]: # python -m pyminifier
+    if '__main__.py' in sys.argv[0]:  # python -m pyminifier
         usage = 'pyminifier [options] "<input file>"'
     parser = OptionParser(usage=usage, version=__version__)
     parser.disable_interspersed_args()
@@ -191,7 +192,7 @@ def main():
     if not files:
         parser.print_help()
         sys.exit(2)
-        
+
     tfiles = []
     for f in files:
         splf = os.path.split(f)
@@ -200,8 +201,9 @@ def main():
         else:
             tfiles.append(f)
     files = tfiles
-        
+
     pyminify(options, files)
+
 
 def add_list_files(splf, f, tfiles):
     fls = getfilemask(getsubs(splf[0])[1], f)

@@ -31,7 +31,7 @@ class TestPyMinify(unittest.TestCase):
         """
         sourcefiles = [
             filename for filename
-                in os.listdir(self.sourcedir) if filename.endswith('.py')]
+            in os.listdir(self.sourcedir) if filename.endswith('.py')]
         results = {}
 
         for filename in sourcefiles:

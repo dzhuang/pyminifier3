@@ -1,5 +1,6 @@
-import pyminifier
 from setuptools import setup
+
+import pyminifier
 
 setup(
     name="pyminifier3",

@@ -36,6 +36,7 @@ def untokenize(tokens):
         last_lineno = end_line
     return out
 
+
 def listified_tokenizer(source):
     """Tokenizes *source* and returns the tokens as a list of lists."""
     io_obj = io.StringIO(source)
