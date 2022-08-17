@@ -51,7 +51,7 @@ Performs the following:
     * Optionally, a value may be specified via --replacement-length to set the
       minimum length of random strings that are used to replace identifier names
       when obfuscating.
-    * Optionally, if using Python 3, you may specify ``--nonlatin`` to use funky
+    * Optionally, you may specify ``--nonlatin`` to use funky
       unicode characters when obfuscating. WARNING: This will result in some
       seriously hard-to-read code! **Tip:** Combine this setting with higher
       ``--replacement-length`` values to make the output even wackier.

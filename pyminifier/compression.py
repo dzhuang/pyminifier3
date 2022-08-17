@@ -159,8 +159,8 @@ def zip_pack(filepath, options):
     script.  A shebang will be appended to the beginning of the resulting
     zip archive which will allow it to
 
-    If being run inside Python 3 and the `lzma` module is available the
-    resulting "pyz" file will use ZIP_LZMA compression to maximize compression.
+    If the `lzma` module is available, the resulting "pyz" file will use
+    ZIP_LZMA compression to maximize compression.
 
     *options* is expected to be the the same options parsed from pyminifier.py
     on the command line.

@@ -83,7 +83,7 @@ arguments:
                             output.  e.g. A copyright notice.
 
 For the examples below we'll be minifying, obfuscating, and compressing the
-following totally made-up Python script (the path in the repository is ``/tests/files/tumult.py``).
+following totally made-up Python script (in repository ``tests/files/tumult.py``).
 
 .. code-block:: python
 
@@ -148,7 +148,7 @@ Run the following command in your console:
 
 .. code-block:: sh
 
-    $ pyminifier /tmp/tumult.py
+    $ pyminifier tests/files/tumult.py
 
 We will get:
 

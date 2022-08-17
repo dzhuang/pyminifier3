@@ -12,7 +12,6 @@ except ImportError:
     pass
 
 
-# ------------------------------------------------------------------------------
 def getsubs(_dir):
     """Returns lists of files and folders located in the folder dir"""
     # get all
@@ -27,7 +26,6 @@ def getsubs(_dir):
     return dirs, files
 
 
-# ------------------------------------------------------------------------------
 def getfilemask(f, mask):
     """Returns a file list from a list of files mask satisfying f"""
     tt = []
@@ -35,7 +33,6 @@ def getfilemask(f, mask):
         if fnmatch.fnmatch(i, mask):
             tt.append(i)
     return tt
-# ------------------------------------------------------------------------------
 
 
 def main():
@@ -174,8 +171,8 @@ def main():
         dest="use_nonlatin",
         default=False,
         help=(
-            "Use non-latin (unicode) characters in obfuscation (Python 3 only)."
-            "  WARNING: This results in some SERIOUSLY hard-to-read code."
+            "Use non-latin (unicode) characters in obfuscation.  "
+            "WARNING: This results in some SERIOUSLY hard-to-read code."
         )
     )
     parser.add_option(

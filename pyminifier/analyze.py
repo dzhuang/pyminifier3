@@ -346,7 +346,7 @@ def enumerate_builtins(tokens):
         # token_type = tok[0]
         token_string = tok[1]
         if token_string in builtins:
-            # todo: I need to test if print can be replaced in Python 3
+            # todo: I need to test if print can be replaced
             special_special = []
             if token_string not in special_special:
                 if not token_string.startswith("__"):  # Don't count magic funcs
