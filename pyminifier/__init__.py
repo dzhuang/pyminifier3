@@ -81,15 +81,11 @@ from . import token_utils
 from . import obfuscate
 from . import compression
 
-py3 = False
 lzma = False
-if not isinstance(sys.version_info, tuple):
-    if sys.version_info.major == 3:
-        py3 = True
-        try:
-            import lzma
-        except ImportError:
-            pass
+try:
+    import lzma
+except ImportError:
+    pass
 
 # define the name of the operating system 'nt'- windows
 os_name = os.name
@@ -216,18 +212,8 @@ def pyminify(options, files):
         if any(obfuscations):
             # Put together that will be used for all obfuscation functions:
             identifier_length = int(options.replacement_length)
-            if options.use_nonlatin:
-                if sys.version_info[0] == 3:
-                    name_generator = obfuscate.obfuscation_machine(
-                        use_unicode=True, identifier_length=identifier_length
-                    )
-                else:
-                    print(
-                        "ERROR: You can't use nonlatin characters without Python 3")
-                    sys.exit(2)
-            else:
-                name_generator = obfuscate.obfuscation_machine(
-                    identifier_length=identifier_length)
+            name_generator = obfuscate.obfuscation_machine(
+                identifier_length=identifier_length)
             table = [{}]
         cumulative_size = 0  # For size reduction stats
         cumulative_new = 0  # Ditto

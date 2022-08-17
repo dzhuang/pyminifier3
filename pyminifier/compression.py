@@ -43,10 +43,6 @@ import os, sys, tempfile, shutil
 # Import our own supporting modules
 from . import analyze, token_utils, minification, obfuscate
 
-py3 = False
-if not isinstance(sys.version_info, tuple):
-    if sys.version_info.major == 3:
-        py3 = True
 
 def bz2_pack(source):
     """
@@ -63,10 +59,9 @@ def bz2_pack(source):
     # Preserve shebangs (don't care about encodings for this)
     first_line = source.split('\n')[0]
     if analyze.shebang.match(first_line):
-        if py3:
-            if first_line.rstrip().endswith('python'): # Make it python3
-                first_line = first_line.rstrip()
-                first_line += '3' #!/usr/bin/env python3
+        if first_line.rstrip().endswith('python'): # Make it python3
+            first_line = first_line.rstrip()
+            first_line += '3' #!/usr/bin/env python3
         out = first_line + '\n'
     compressed_source = bz2.compress(source.encode('utf-8'))
     out += 'import bz2, base64\n'
@@ -90,10 +85,9 @@ def gz_pack(source):
     # Preserve shebangs (don't care about encodings for this)
     first_line = source.split('\n')[0]
     if analyze.shebang.match(first_line):
-        if py3:
-            if first_line.rstrip().endswith('python'): # Make it python3
-                first_line = first_line.rstrip()
-                first_line += '3' #!/usr/bin/env python3
+        if first_line.rstrip().endswith('python'): # Make it python3
+            first_line = first_line.rstrip()
+            first_line += '3' #!/usr/bin/env python3
         out = first_line + '\n'
     compressed_source = zlib.compress(source.encode('utf-8'))
     out += 'import zlib, base64\n'
@@ -117,10 +111,9 @@ def lzma_pack(source):
     # Preserve shebangs (don't care about encodings for this)
     first_line = source.split('\n')[0]
     if analyze.shebang.match(first_line):
-        if py3:
-            if first_line.rstrip().endswith('python'): # Make it python3
-                first_line = first_line.rstrip()
-                first_line += '3' #!/usr/bin/env python3
+        if first_line.rstrip().endswith('python'): # Make it python3
+            first_line = first_line.rstrip()
+            first_line += '3' #!/usr/bin/env python3
         out = first_line + '\n'
     compressed_source = lzma.compress(source.encode('utf-8'))
     out += 'import lzma, base64\n'
@@ -185,10 +178,9 @@ def zip_pack(filepath, options):
     if not shebang:
     # We *must* have a shebang for this to work so make a conservative default:
         shebang = "#!/usr/bin/env python"
-    if py3:
-        if shebang.rstrip().endswith('python'): # Make it python3 (to be safe)
-            shebang = shebang.rstrip()
-            shebang += '3\n' #!/usr/bin/env python3
+    if shebang.rstrip().endswith('python'): # Make it python3 (to be safe)
+        shebang = shebang.rstrip()
+        shebang += '3\n' #!/usr/bin/env python3
     if not options.nominify: # Minify as long as we don't have this option set
         source = minification.minify(primary_tokens, options)
     # Write out to a temporary file to add to our zip
@@ -217,18 +209,8 @@ def zip_pack(filepath, options):
         or options.obf_builtins or options.obf_import_methods:
         # Put together that will be used for all obfuscation functions:
         identifier_length = int(options.replacement_length)
-        if options.use_nonlatin:
-            if sys.version_info[0] == 3:
-                name_generator = obfuscate.obfuscation_machine(
-                    use_unicode=True, identifier_length=identifier_length
-                )
-            else:
-                print(
-                    "ERROR: You can't use nonlatin characters without Python 3")
-                sys.exit(2)
-        else:
-            name_generator = obfuscate.obfuscation_machine(
-                identifier_length=identifier_length)
+        name_generator = obfuscate.obfuscation_machine(
+            identifier_length=identifier_length)
         table =[{}]
     included_modules = []
     for module in local_modules:

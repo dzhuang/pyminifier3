@@ -8,13 +8,6 @@ A module of useful functions for analyzing Python code.
 import os, sys, re, tokenize, keyword
 import io
 
-# Globals
-py3 = False
-
-if not isinstance(sys.version_info, tuple):
-    if sys.version_info.major == 3:
-        py3 = True
-
 shebang = re.compile('^#\!.*$')
 encoding = re.compile(".*coding[:=]\s*([-\w.]+)")
 # __builtins__ is different for every module so we need a hard-coded list:
@@ -348,10 +341,8 @@ def enumerate_builtins(tokens):
         token_type = tok[0]
         token_string = tok[1]
         if token_string in builtins:
-            # Note: I need to test if print can be replaced in Python 3
-            special_special = ['print'] # Print is special in Python 2
-            if py3:
-                special_special = []
+            # todo: I need to test if print can be replaced in Python 3
+            special_special = []
             if token_string not in special_special:
                 if not token_string.startswith('__'): # Don't count magic funcs
                     if tokens[index-1][1] != '.' and tokens[index+1][1] != '=':

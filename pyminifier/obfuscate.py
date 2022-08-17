@@ -1,11 +1,11 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 __doc__ = """\
 A collection of functions for obfuscating code.
 """
 
-import os, sys, tokenize, keyword, sys, unicodedata
+import os, sys, tokenize, keyword, unicodedata
 from random import shuffle, choice
 from itertools import permutations
 
@@ -27,13 +27,11 @@ FUNC_REPLACEMENTS = {}
 CLASS_REPLACEMENTS = {}
 UNIQUE_REPLACEMENTS = {}
 
-def obfuscation_machine(use_unicode=False, identifier_length=1):
+
+def obfuscation_machine(identifier_length=1):
     """
     A generator that returns short sequential combinations of lower and
     upper-case letters that will never repeat.
-
-    If *use_unicode* is ``True``, use nonlatin cryllic, arabic, and syriac
-    letters instead of the usual ABCs.
 
     The *identifier_length* represents the length of the string to return using
     the aforementioned characters.
@@ -42,29 +40,27 @@ def obfuscation_machine(use_unicode=False, identifier_length=1):
     lowercase = list(map(chr, range(97, 123)))
     # Same thing but ALL CAPS:
     uppercase = list(map(chr, range(65, 90)))
-    if use_unicode:
-        # Python 3 lets us have some *real* fun:
-        allowed_categories = ('LC', 'Ll', 'Lu', 'Lo', 'Lu')
-        # All the fun characters start at 1580 (hehe):
-        big_list = list(map(chr, range(1580, HIGHEST_UNICODE)))
-        max_chars = 1000 # Ought to be enough for anybody :)
-        combined = []
-        rtl_categories = ('AL', 'R') # AL == Arabic, R == Any right-to-left
-        last_orientation = 'L'       # L = Any left-to-right
-        # Find a good mix of left-to-right and right-to-left characters
-        while len(combined) < max_chars:
-            char = choice(big_list)
-            if unicodedata.category(char) in allowed_categories:
-                orientation = unicodedata.bidirectional(char)
-                if last_orientation in rtl_categories:
-                    if orientation not in rtl_categories:
-                        combined.append(char)
-                else:
-                    if orientation in rtl_categories:
-                        combined.append(char)
-                last_orientation = orientation
-    else:
-        combined = lowercase + uppercase
+    # Python 3 lets us have some *real* fun:
+    allowed_categories = ('LC', 'Ll', 'Lu', 'Lo', 'Lu')
+    # All the fun characters start at 1580 (hehe):
+    big_list = list(map(chr, range(1580, HIGHEST_UNICODE)))
+    max_chars = 1000 # Ought to be enough for anybody :)
+    combined = []
+    rtl_categories = ('AL', 'R') # AL == Arabic, R == Any right-to-left
+    last_orientation = 'L'       # L = Any left-to-right
+    # Find a good mix of left-to-right and right-to-left characters
+    while len(combined) < max_chars:
+        char = choice(big_list)
+        if unicodedata.category(char) in allowed_categories:
+            orientation = unicodedata.bidirectional(char)
+            if last_orientation in rtl_categories:
+                if orientation not in rtl_categories:
+                    combined.append(char)
+            else:
+                if orientation in rtl_categories:
+                    combined.append(char)
+            last_orientation = orientation
+
     shuffle(combined) # Randomize it all to keep things interesting
     while True:
         for perm in permutations(combined, identifier_length):
@@ -72,6 +68,7 @@ def obfuscation_machine(use_unicode=False, identifier_length=1):
             if perm not in RESERVED_WORDS: # Can't replace reserved words
                 yield perm
         identifier_length += 1
+
 
 def apply_obfuscation(source):
     """
@@ -652,6 +649,7 @@ def obfuscate_global_import_methods(module, tokens, name_generator, table=None):
                     index += 6 # To make up for the six tokens we inserted
             index += 1
 
+
 def obfuscate(module, tokens, options, name_generator=None, table=None):
     """
     Obfuscates *tokens* in-place.  *options* is expected to be the options
@@ -672,15 +670,7 @@ def obfuscate(module, tokens, options, name_generator=None, table=None):
     if not name_generator:
         if options.use_nonlatin:
             ignore_length = True
-            if sys.version_info[0] == 3:
-                name_generator = obfuscation_machine(
-                    use_unicode=True, identifier_length=identifier_length)
-            else:
-                print(
-                    "ERROR: You can't use nonlatin characters without Python 3")
-        else:
-            name_generator = obfuscation_machine(
-                identifier_length=identifier_length)
+        name_generator = obfuscation_machine(identifier_length=identifier_length)
     if options.obfuscate:
         variables = find_obfuscatables(
             tokens, obfuscatable_variable, ignore_length=ignore_length)
@@ -754,6 +744,7 @@ def obfuscate(module, tokens, options, name_generator=None, table=None):
         if options.obf_builtins:
             obfuscate_builtins(module, tokens, name_generator, table)
 
+
 if __name__ == "__main__":
     global name_generator
     try:
@@ -761,9 +752,6 @@ if __name__ == "__main__":
     except:
         print("Usage: %s <filename.py>" % sys.argv[0])
         sys.exit(1)
-    if sys.version_info[0] == 3:
-        name_generator = obfuscation_machine(use_unicode=True)
-    else:
-        name_generator = obfuscation_machine(identifier_length=1)
+    name_generator = obfuscation_machine()
     source = apply_obfuscation(source)
     print(source)

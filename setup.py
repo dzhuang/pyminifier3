@@ -1,15 +1,5 @@
-import sys
 import pyminifier
 from setuptools import setup
-
-if isinstance(sys.version_info, tuple):
-    major = sys.version_info[0]
-else:
-    major = sys.version_info.major
-
-if major == 2:
-    print("Python 2 is no longer supported.")
-    sys.exit(1)
 
 setup(
     name="pyminifier",
@@ -24,15 +14,7 @@ setup(
         "Environment :: Console",
         "Intended Audience :: Developers",
         "Intended Audience :: System Administrators",
-        "Programming Language :: Python",
-        "Programming Language :: Python :: 2",
-        "Programming Language :: Python :: 2.6",
-        "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.1",
-        "Programming Language :: Python :: 3.2",
-        "Programming Language :: Python :: 3.3",
-        "Programming Language :: Python :: 3.4",
         "License :: OSI Approved :: GNU Affero General Public License v3",
         "Topic :: Software Development :: Build Tools",
         "Topic :: Software Development :: Libraries :: Python Modules",
