@@ -12,7 +12,7 @@ Pyminifier is a Python code minifier, obfuscator, and compressor.
 Supported Python Versions
 =========================
 
-This package requires Python >= 3.
+This package requires Python 3.
 
 
 Fork
@@ -76,16 +76,17 @@ arguments:
                           The length of the random names that will be used when
                             obfuscating identifiers.
     --nonlatin            Use non-latin (unicode) characters in obfuscation
-                            (Python 3 only).  WARNING: This results in some
+                            WARNING: This results in some
                             SERIOUSLY hard-to-read code.
     --prepend=<file path>
                           Prepend the text in this file to the top of our
                             output.  e.g. A copyright notice.
 
 For the examples below we'll be minifying, obfuscating, and compressing the
-following totally made-up Python script (saved to ``/tmp/tumult.py``)::
+following totally made-up Python script (the path in the repository is ``/tests/files/tumult.py``).
 
 .. code-block:: python
+
     #!/usr/bin/env python3
     """
     tumult.py - Because everyone needs a little chaos every now and again.
@@ -141,11 +142,18 @@ following totally made-up Python script (saved to ``/tmp/tumult.py``)::
 By default pyminifier will perform basic minification and print the resulting
 code to stdout:
 
-.. note:: The tumult.py script is 1358 bytes.  Remember that.
+.. note:: The tumult.py script is 1411 bytes.  Remember that.
+
+Run the following command in your console:
 
 .. code-block:: sh
 
     $ pyminifier /tmp/tumult.py
+
+We will get:
+
+.. code-block:: python
+
     #!/usr/bin/env python3
     try:
      import demiurgic
@@ -171,7 +179,7 @@ code to stdout:
      f.test("Codswallop")
     # Created by pyminifier (https://github.com/dzhuang/pyminifier3)
 
-This reduced the size of tumult.py from 1358 bytes to 640 bytes.  Not bad!
+This reduced the size of tumult.py from 1411 bytes to 700 bytes.  Not bad!
 
 Minifying by itself can reduce code size considerably but pyminifier can go
 further by obfuscating the code.  What that means is that it will replace the
@@ -184,41 +192,42 @@ Special Sauce
 -------------
 So let's pretend for a moment that your intentions are not pure; that you
 totally want to mess with the people that look at your minified code.  What you
-need is Python 3 and the ``--nonlatin`` option...
+need is the ``--nonlatin`` option...
 
-.. code-block:: sh
+.. code-block:: python
 
-    #!/usr/bin/env python
-    ﵛ=ImportError
-    ࡅ=print
-    㮀=False
-    搓=object
-    try:
-     import demiurgic
-    except ﵛ:
-    ࡅ("Warning: You're not demiurgic. Actually, I think that's normal.")
-    try:
-     import mystificate
-    except ﵛ:
-    ࡅ("Warning: Dark voodoo may be unreliable.")
-    ﵩ=㮀
-    class רּ(搓):
-     def __init__(self,*args,**kwargs):
-      pass
-     def 𐨱(self,dactyl):
-      ﱲ=demiurgic.palpitation(dactyl)
-      ꁁ=mystificate.dark_voodoo(ﱲ)
-      return ꁁ
-     def 𨠅(self,whatever):
-      ࡅ(whatever)
-    if __name__=="__main__":
-     ࡅ("Forming...")
-     녂=רּ("epicaricacy","perseverate")
-     녂.𨠅("Codswallop")
-    # Created by pyminifier.py (https://github.com/dzhuang/pyminifier3)
+  #!/usr/bin/env python3
+  ﭿ=ImportError
+  �=print
+  㢑=False
+  ﷀ=object
+  try:
+   import demiurgic
+  except ﭿ:
+   �("Warning: You're not demiurgic. Actually, I think that's normal.")
+  try:
+   import mystificate
+  except ﭿ:
+   �("Warning: Dark voodoo may be unreliable.")
+  �=㢑
+  class 磂(ﷀ):
+   def __init__(self,*args,**kwargs):
+    pass
+   def �(self,dactyl):
+    ꂋ=demiurgic.palpitation(dactyl)
+    �=mystificate.dark_voodoo(ꂋ)
+    return �
+   def ڠ(self,whatever):
+    �(whatever)
+  if __name__=="__main__":
+   �("Forming...")
+   �=磂("epicaricacy","perseverate")
+   �.ڠ("Codswallop")
+  # Created by pyminifier (https://github.com/dzhuang/pyminifier3)
 
-Yes, that code actually works *but only using Python 3*.  This is because Python
-3 supports coding in languages that use non-latin character sets.
+
+Yes, that code actually works, because Python 3 supports coding in languages
+that use non-latin character sets.
 
 .. note::
 
