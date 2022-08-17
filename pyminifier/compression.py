@@ -38,10 +38,13 @@ files.  To pack a number of files at once using this method use the
 """
 
 # Import standard library modules
-import os, sys, tempfile, shutil
+import os
+import shutil
+import sys
+import tempfile
 
 # Import our own supporting modules
-from . import analyze, token_utils, minification, obfuscate
+from . import analyze, minification, obfuscate, token_utils
 
 
 def bz2_pack(source):
@@ -54,7 +57,8 @@ def bz2_pack(source):
         advantage in that the resulting .py file can still be imported into a
         python program.
     """
-    import bz2, base64
+    import base64
+    import bz2
     out = ""
     # Preserve shebangs (don't care about encodings for this)
     first_line = source.split('\n')[0]
@@ -80,7 +84,8 @@ def gz_pack(source):
         advantage in that the resulting .py file can still be imported into a
         python program.
     """
-    import zlib, base64
+    import base64
+    import zlib
     out = ""
     # Preserve shebangs (don't care about encodings for this)
     first_line = source.split('\n')[0]
@@ -106,7 +111,8 @@ def lzma_pack(source):
         advantage in that the resulting .py file can still be imported into a
         python program.
     """
-    import lzma, base64
+    import base64
+    import lzma
     out = ""
     # Preserve shebangs (don't care about encodings for this)
     first_line = source.split('\n')[0]
@@ -162,6 +168,7 @@ def zip_pack(filepath, options):
         * The result will be saved as a .pyz file (which is an extension I invented for this format).
     """
     import zipfile
+
     # Hopefully some day we'll be able to use ZIP_LZMA too as the compression
     # format to save even more space...
     compression_format = zipfile.ZIP_DEFLATED

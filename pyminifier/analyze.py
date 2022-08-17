@@ -4,9 +4,10 @@ __doc__ = """\
 A module of useful functions for analyzing Python code.
 """
 
-# Import builtins
-import os, sys, re, tokenize, keyword
-import io
+import keyword
+import os
+import re
+import tokenize
 
 shebang = re.compile('^#\!.*$')
 encoding = re.compile(".*coding[:=]\s*([-\w.]+)")

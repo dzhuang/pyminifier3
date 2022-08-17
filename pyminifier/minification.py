@@ -4,9 +4,11 @@ __doc__ = """\
 Module for minification functions.
 """
 
-# Import built-in modules
-import re, tokenize, keyword
 import io
+import keyword
+# Import built-in modules
+import re
+import tokenize
 
 # Import our own modules
 from . import analyze, token_utils

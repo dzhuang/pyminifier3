@@ -1,7 +1,7 @@
-from optparse import OptionParser
 import sys
-from . import pyminify
-from . import __version__
+from optparse import OptionParser
+
+from . import __version__, pyminify
 
 lzma = False
 try:
@@ -9,7 +9,10 @@ try:
 except ImportError:
     pass
 
-import os, fnmatch, re
+import fnmatch
+import os
+import re
+
 
 #------------------------------------------------------------------------------
 def getsubs(dir):

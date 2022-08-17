@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-import unittest
-import subprocess
-import tempfile
 import os
 import shutil
+import subprocess
+import tempfile
+import unittest
 
 testdir = os.path.abspath(os.path.split(__file__)[0])
 maindir = os.path.dirname(testdir)

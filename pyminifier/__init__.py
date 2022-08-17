@@ -66,20 +66,13 @@ something is broken.
     cases for testing pyminifier.
 """
 
-# Import built-in modules
-import os
-import sys
-import re
 import io
-
-from optparse import OptionParser
+import os
+import re
+import sys
 from collections.abc import Iterable
 
-# Import our own modules
-from . import minification
-from . import token_utils
-from . import obfuscate
-from . import compression
+from . import compression, minification, obfuscate, token_utils
 
 lzma = False
 try:
