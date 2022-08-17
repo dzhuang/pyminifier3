@@ -5,8 +5,8 @@ Pyminifier is a Python code minifier, obfuscator, and compressor.
 
 .. note::
 
-    * For the latest, complete documentation: http://liftoff.github.io/pyminifier/
-    * For the latest code: https://github.com/liftoff/pyminifier
+    * For the latest, complete documentation: https://pyminifier3.readthedocs.io/
+    * For the latest code: https://github.com/dzhuang/pyminifier3
 
 
 Supported Python Versions
@@ -238,4 +238,4 @@ that use non-latin character sets.
     *really* hard to figure out things like indentation levels and whatnot!
 
 There's even more ways to mess with people in the
-`full documentation <http://liftoff.github.io/pyminifier/>`_
+`full documentation <https://pyminifier3.readthedocs.io//>`_

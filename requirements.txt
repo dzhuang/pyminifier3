@@ -1,0 +1,7 @@
+# For lint
+flake8
+isort
+
+# For docs
+sphinx
+sphinx-rtd-theme

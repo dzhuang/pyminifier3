@@ -35,8 +35,8 @@ Performs the following:
     * Removes trailing commas.
     * Joins multiline pairs of parentheses, braces, and brackets (and removes
       extraneous whitespace within).
-    * Joins disjointed strings like, ``("some" "disjointed" "string")`` into single
-      strings: ``('''some disjointed string''')
+    * Joins disjointed strings like, ("some" "disjointed" "string") into single
+      strings: ('''some disjointed string''')
     * Preserves shebangs and encoding info (e.g. "# -- coding: utf-8 --").
     * Optionally, produces a bzip2 or gzip-compressed self-extracting python script
       containing the minified source for ultimate minification.
@@ -73,10 +73,10 @@ Performs the following:
       cannot be imported into other Python scripts.
       *Added in version 2.0*
 
-Just how much space can be saved by pyminifier?  Here's a comparison:
+Just how much space can be saved by pyminifier? Here's a comparison:
 
-    * The pyminifier source (all six files) takes up about 164k.
-    * Performing basic minification on all pyminifier source files reduces that
+    * The pyminifier3 (as of version 2.1) source (all 7 files) takes up about 106k.
+    * Performing basic minification on all pyminifier3 source files reduces that
       to ~104k.
     * Minification plus obfuscation provides a further reduction to 92k.
     * Minification plus the base64-encoded gzip trick (--gzip) reduces it to 76k.
@@ -103,7 +103,7 @@ something is broken.
 .. note::
 
     The test functions below are meaningless.  They only serve as test/edge
-    cases for testing pyminifier.
+    cases for testing pyminifier3.
 """
 
 import io
