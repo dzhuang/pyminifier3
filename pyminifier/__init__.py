@@ -358,9 +358,4 @@ def pyminify(options, files):
                 "{_file} ({filesize}) reduced to {new_filesize} bytes "
                 "({percent_saved}% of original size)".format(**locals())))
         else:
-            try:
-                import pprint
-                pprint.pprint(result)
-            except Exception as inst:
-                print(inst)
-                pass
+            print(result)
