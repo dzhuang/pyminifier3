@@ -29,7 +29,7 @@ def untokenize(tokens):
         # The following two conditionals preserve indentation:
         if start_line > last_lineno:
             last_col = 0
-        if start_col > last_col and token_string != '\n':
+        if start_col > last_col and token_string != "\n":
             out += (" " * (start_col - last_col))
         out += token_string
         last_col = end_col

@@ -44,7 +44,7 @@ def main():
     runs :py:func:`pyminifier.pyminify` with the given command line options.
     """
     usage = '%prog [options] "<input file>"'
-    if '__main__.py' in sys.argv[0]:  # python -m pyminifier
+    if "__main__.py" in sys.argv[0]:  # python -m pyminifier
         usage = 'pyminifier [options] "<input file>"'
     parser = OptionParser(usage=usage, version=__version__)
     parser.disable_interspersed_args()
@@ -196,7 +196,7 @@ def main():
     tfiles = []
     for f in files:
         splf = os.path.split(f)
-        if splf[1].count('*'):
+        if splf[1].count("*"):
             add_list_files(splf, f, tfiles)
         else:
             tfiles.append(f)
