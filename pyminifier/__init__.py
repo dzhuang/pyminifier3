@@ -1,20 +1,26 @@
 # -*- coding: utf-8 -*-
 #
 #       Copyright 2013 Liftoff Software Corporation
-#
+#                 2022 Dong Zhuang
 # For license information see LICENSE.txt
 
 # Meta
-__version__ = '2.2.1'
-__version_info__ = (2, 2, 1)
+__version__ = '2.3'
+__version_info__ = (2, 3)
 __license__ = "GPLv3"  # See LICENSE.txt
-__author__ = 'Dan McDougall <daniel.mcdougall@liftoffsoftware.com>'
+__author__ = (
+    'Dan McDougall <daniel.mcdougall@liftoffsoftware.com>,'
+    'Dong Zhuang <dzhuang.scut@gmail.com>')
 
-# TODO: Add the ability to mark variables, functions, classes, and methods for non-obfuscation.
-# TODO: Add the ability to selectively obfuscate identifiers inside strings (for metaprogramming stuff).
+# TODO: Add the ability to mark variables, functions, classes, and methods
+#       for non-obfuscation.
+# TODO: Add the ability to selectively obfuscate identifiers inside strings
+#      (for metaprogramming stuff).
 # TODO: Add the ability to use a config file instead of just command line args.
-# TODO: Add the ability to save a file that allows for de-obfuscation later (or at least the ability to debug).
-# TODO: Separate out the individual functions of minification so that they can be chosen selectively like the obfuscation functions.
+# TODO: Add the ability to save a file that allows for de-obfuscation later
+#      (or at least the ability to debug).
+# TODO: Separate out the individual functions of minification so that they can
+#      be chosen selectively like the obfuscation functions.
 # TODO: A conflict file entry in the windows operating system
 
 __doc__ = """\
@@ -27,24 +33,58 @@ Performs the following:
     * Removes comments.
     * Minimizes code indentation.
     * Removes trailing commas.
-    * Joins multiline pairs of parentheses, braces, and brackets (and removes extraneous whitespace within).
-    * Joins disjointed strings like, ``("some" "disjointed" "string")`` into single strings: ``('''some disjointed string''')
+    * Joins multiline pairs of parentheses, braces, and brackets (and removes
+      extraneous whitespace within).
+    * Joins disjointed strings like, ``("some" "disjointed" "string")`` into single
+      strings: ``('''some disjointed string''')
     * Preserves shebangs and encoding info (e.g. "# -- coding: utf-8 --").
-    * Optionally, produces a bzip2 or gzip-compressed self-extracting python script containing the minified source for ultimate minification. *Added in version 1.4*
-    * Optionally, obfuscates the code using the shortest possible combination of letters and numbers for one or all of class names, function/method names, and variables. The options are ``--obfuscate`` or ``-O`` to obfuscate everything, ``--obfuscate-variables``, ``--obfuscate-functions``, and ``--obfuscate-classes`` to obfuscate things individually (say, if you wanted to keep your module usable by external programs).  *Added in version 2.0*
-    * Optionally, a value may be specified via --replacement-length to set the minimum length of random strings that are used to replace identifier names when obfuscating.
-    * Optionally, if using Python 3, you may specify ``--nonlatin`` to use funky unicode characters when obfuscating. WARNING: This will result in some seriously hard-to-read code! **Tip:** Combine this setting with higher ``--replacement-length`` values to make the output even wackier.  *Added in version 2.0*
-    * Pyminifier can now minify/obfuscate an arbitrary number of Python scripts in one go.  For example, ``pyminifier -O *.py`` will minify and obfuscate all files in the current directory ending in .py.  To prevent issues with using differentiated obfuscated identifiers across multiple files, pyminifier will keep track of what replaces what via a lookup table to ensure foo_module.whatever is gets the same replacement across all source files.  *Added in version 2.0*
-    * Optionally, creates an executable zip archive (pyz) containing the minified/obfuscated source script and all implicit (local path) imported modules.  This mechanism automatically figures out which source files to include in the .pyz archive by analyzing the script passed to pyminifier on the command line (listing all the modules your script uses is unnecessary).  This is also the **ultimate** in minification/compression besting both the gzip and bzip2 compression mechanisms with the disadvantage that .pyz files cannot be imported into other Python scripts.  *Added in version 2.0*
+    * Optionally, produces a bzip2 or gzip-compressed self-extracting python script
+      containing the minified source for ultimate minification.
+      *Added in version 1.4*
+    * Optionally, obfuscates the code using the shortest possible combination of
+      letters and numbers for one or all of class names, function/method names, and
+      variables. The options are ``--obfuscate`` or ``-O`` to obfuscate everything,
+      ``--obfuscate-variables``, ``--obfuscate-functions``,
+      and ``--obfuscate-classes`` to obfuscate things individually
+      (say, if you wanted to keep your module usable by external programs).
+      *Added in version 2.0*
+    * Optionally, a value may be specified via --replacement-length to set the
+      minimum length of random strings that are used to replace identifier names
+      when obfuscating.
+    * Optionally, if using Python 3, you may specify ``--nonlatin`` to use funky
+      unicode characters when obfuscating. WARNING: This will result in some
+      seriously hard-to-read code! **Tip:** Combine this setting with higher
+      ``--replacement-length`` values to make the output even wackier.
+      *Added in version 2.0*
+    * Pyminifier can now minify/obfuscate an arbitrary number of Python
+      scripts in one go.  For example, ``pyminifier -O *.py`` will minify and
+      obfuscate all files in the current directory ending in .py.  To prevent
+      issues with using differentiated obfuscated identifiers across multiple files,
+      pyminifier will keep track of what replaces what via a lookup table to ensure
+      foo_module.whatever is gets the same replacement across all source files.
+      *Added in version 2.0*
+    * Optionally, creates an executable zip archive (pyz) containing the
+      minified/obfuscated source script and all implicit (local path) imported
+      modules.  This mechanism automatically figures out which source files to
+      include in the .pyz archive by analyzing the script passed to pyminifier
+      on the command line (listing all the modules your script uses is unnecessary).
+      This is also the **ultimate** in minification/compression besting both the
+      gzip and bzip2 compression mechanisms with the disadvantage that .pyz files
+      cannot be imported into other Python scripts.
+      *Added in version 2.0*
 
 Just how much space can be saved by pyminifier?  Here's a comparison:
 
     * The pyminifier source (all six files) takes up about 164k.
-    * Performing basic minification on all pyminifier source files reduces that to ~104k.
+    * Performing basic minification on all pyminifier source files reduces that
+      to ~104k.
     * Minification plus obfuscation provides a further reduction to 92k.
     * Minification plus the base64-encoded gzip trick (--gzip) reduces it to 76k.
-    * Minification plus gzip compression plus obfuscation is also 76k (demonstrating that obfuscation makes no difference when compression algorthms are used).
-    * Using the --pyz option on pyminifier.py creates a ~14k .pyz file that includes all the aforementioned files.
+    * Minification plus gzip compression plus obfuscation is also 76k
+      (demonstrating that obfuscation makes no difference when compression
+      algorithms are used).
+    * Using the --pyz option on pyminifier.py creates a ~14k .pyz file that
+      includes all the aforementioned files.
 
 Various examples and edge cases are sprinkled throughout the pyminifier code so
 that it can be tested by minifying itself.  The way to test is thus:
@@ -72,7 +112,7 @@ import re
 import sys
 from collections.abc import Iterable
 
-from . import compression, minification, obfuscate, token_utils
+from . import compression, constants, minification, obfuscate, token_utils
 
 lzma = False
 try:
@@ -84,7 +124,7 @@ except ImportError:
 os_name = os.name
 
 # Regexes
-multiline_indicator = re.compile('\\\\(\s*#.*)?\n')
+multiline_indicator = re.compile('\\\\(\s*#.*)?\n')  # noqa
 
 # The test.+() functions below are for testing pyminifier...
 
@@ -96,7 +136,7 @@ def test_decorator(f):
 
 def test_reduce_operators():
     """Test the case where an operator such as an open paren starts a line"""
-    (a, b) = 1, 2  # The indentation level should be preserved
+    (a, b) = 1, 2  # The indentation level should be preserved  # noqa
     pass
 
 
@@ -123,20 +163,20 @@ def test_function():
     # This tests method obfuscation:
     method_obfuscate = test_class()
     method_obfuscate.test_function()
-    foo = ("The # character in this string should "  # This comment
-           "not result in a syntax error")  # ...and this one should go away
-    test_multi_line_list = [
+    foo = ("The # character in this string should "  # This comment  # noqa
+           "not result in a syntax error")  # ...and this one should go away  # noqa
+    test_multi_line_list = [  # noqa
         'item1',
         'item2',
         'item3'
     ]
-    test_multi_line_dict = {
+    test_multi_line_dict = {  # noqa
         'item1': 1,
         'item2': 2,
         'item3': 3
     }
     # It may seem strange but the code below tests our docstring removal code.
-    test_string_inside_operators = imaginary_function(
+    test_string_inside_operators = imaginary_function(  # noqa
         "This string was indented but the tokenizer won't see it that way."
     )  # To understand how this could mess up docstring removal code see the
     # minification.minification.remove_comments_and_docstrings() function
@@ -144,7 +184,7 @@ def test_function():
     #     "elif token_type == tokenize.STRING:"
     # This tests remove_extraneous_spaces():
     this_line_has_leading_indentation    = '''<--That extraneous space should be
-                                              removed''' # But not these spaces
+                                              removed'''  # But not these spaces  # noqa
 
 
 def is_iterable(obj):
@@ -246,9 +286,7 @@ def pyminify(options, files):
                 result = compression.gz_pack(result)
             elif lzma and options.lzma:
                 result = compression.lzma_pack(result)
-            result += (
-                "# Created by pyminifier "
-                "(https://github.com/liftoff/pyminifier)\n")
+            result += "{}\n".format(constants.RESULT_FOOTER)
             # Either save the result to the output file or print it to stdout
             if not os.path.exists(options.destdir):
                 os.mkdir(options.destdir)
@@ -307,15 +345,15 @@ def pyminify(options, files):
             result = compression.gz_pack(result)
         elif lzma and options.lzma:
             result = compression.lzma_pack(result)
-        result += (
-            "# Created by pyminifier "
-            "(https://github.com/liftoff/pyminifier)\n")
+        result += "{}\n".format(constants.RESULT_FOOTER)
         # Either save the result to the output file or print it to stdout
         if options.outfile:
             with io.open(options.outfile, 'w', encoding='utf-8') as f:
                 f.write(result)
             new_filesize = os.path.getsize(options.outfile)
-            percent_saved = round(float(new_filesize) / float(filesize) * 100, 2) if int(filesize) != 0 else 0
+            percent_saved = (
+                round(float(new_filesize) / float(filesize) * 100, 2)
+                if int(filesize) != 0 else 0)
             print((
                 "{_file} ({filesize}) reduced to {new_filesize} bytes "
                 "({percent_saved}% of original size)".format(**locals())))

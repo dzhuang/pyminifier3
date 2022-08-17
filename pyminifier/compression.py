@@ -44,7 +44,7 @@ import shutil
 import tempfile
 
 # Import our own supporting modules
-from . import analyze, minification, obfuscate, token_utils
+from . import analyze, constants, minification, obfuscate, token_utils
 
 
 def bz2_pack(source):
@@ -261,9 +261,7 @@ def zip_pack(filepath, options):
             )
         # Convert back to text
         result = token_utils.untokenize(tokens)
-        result += (
-                "# Created by pyminifier "
-                "(https://github.com/liftoff/pyminifier)\n")
+        result += "{}\n".format(constants.RESULT_FOOTER)
         # Write out to a temporary file to add to our zip
         temp = tempfile.NamedTemporaryFile(mode='w')
         temp.write(source)
