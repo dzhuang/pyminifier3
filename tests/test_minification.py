@@ -54,5 +54,6 @@ class TestPyMinify(unittest.TestCase):
         """
         shutil.rmtree(self.testdir)
 
+
 if __name__ == '__main__':
     unittest.main()

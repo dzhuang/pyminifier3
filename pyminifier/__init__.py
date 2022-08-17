@@ -194,7 +194,8 @@ def pyminify(options, files):
     prepend = None
     if options.prepend:
         try:
-            prepend = open(options.prepend).read()
+            with open(options.prepend, encoding="utf-8") as f:
+                prepend = f.read()
         except Exception as err:
             print("Error reading %s:" % options.prepend)
             print(err)
@@ -224,10 +225,8 @@ def pyminify(options, files):
             # Get the module name from the path
             module = os.path.split(sourcefile)[1]
             module = ".".join(module.split('.')[:-1])
-            if os_name in ('nt',):
-                source = open(sourcefile, encoding="utf8").read()
-            else:
-                source = open(sourcefile).read()
+            with open(sourcefile, encoding="utf-8") as _f:
+                source = _f.read()
             tokens = token_utils.listified_tokenizer(source)
             if not options.nominify:  # Perform minification
                 source = minification.minify(tokens, options)
@@ -263,12 +262,8 @@ def pyminify(options, files):
             # Need the path where the script lives for the next steps:
             filepath = os.path.split(sourcefile)[1]
             path = options.destdir + '/' + filepath  # Put everything in destdir
-            if os_name in ('nt',):
-                f = open(path, 'w', encoding='utf-8')
-            else:
-                f = open(path, 'w')
-            f.write(result)
-            f.close()
+            with open(path, 'w', encoding='utf-8') as f:
+                f.write(result)
             new_filesize = os.path.getsize(path)
             cumulative_new += new_filesize
             percent_saved = (
@@ -289,10 +284,9 @@ def pyminify(options, files):
         module = os.path.split(_file)[1]
         module = ".".join(module.split('.')[:-1])
         filesize = os.path.getsize(_file)
-        if os_name in ('nt',):
-            source = open(_file, encoding='utf-8').read()
-        else:
-            source = open(_file).read()
+        with open(_file, encoding='utf-8') as f:
+            source = f.read()
+
         # Convert the tokens from a tuple of tuples to a list of lists so we can
         # update in-place.
         tokens = token_utils.listified_tokenizer(source)
@@ -325,9 +319,8 @@ def pyminify(options, files):
             "(https://github.com/liftoff/pyminifier)\n")
         # Either save the result to the output file or print it to stdout
         if options.outfile:
-            f = io.open(options.outfile, 'w', encoding='utf-8')
-            f.write(result)
-            f.close()
+            with io.open(options.outfile, 'w', encoding='utf-8') as f:
+                f.write(result)
             new_filesize = os.path.getsize(options.outfile)
             percent_saved = round(float(new_filesize) / float(filesize) * 100, 2) if int(filesize) != 0 else 0
             print((
@@ -340,7 +333,3 @@ def pyminify(options, files):
             except Exception as inst:
                 print(inst)
                 pass
-
-
-
-

@@ -171,7 +171,10 @@ def zip_pack(filepath, options):
     dest = options.pyz
     z = zipfile.ZipFile(dest, "w", compression_format)
     # Take care of minifying our primary script first:
-    source = open(filepath).read()
+
+    with open(filepath, encoding="utf-8") as f:
+        source = f.read()
+
     primary_tokens = token_utils.listified_tokenizer(source)
     # Preserve shebangs (don't care about encodings for this)
     shebang = analyze.get_shebang(primary_tokens)
@@ -221,7 +224,8 @@ def zip_pack(filepath, options):
         # Also record that we've added it to the archive
         included_modules.append(module)
         # Minify these files too
-        source = open(os.path.join(path, module)).read()
+        with open(os.path.join(path, module)) as f:
+            source = f.read()
         tokens = token_utils.listified_tokenizer(source)
         maybe_more_modules = analyze.enumerate_local_modules(tokens, path)
         for mod in maybe_more_modules:

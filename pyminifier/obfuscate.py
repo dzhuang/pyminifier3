@@ -748,8 +748,9 @@ def obfuscate(module, tokens, options, name_generator=None, table=None):
 if __name__ == "__main__":
     global name_generator
     try:
-        source = open(sys.argv[1]).read()
-    except:
+        with open(sys.argv[1]) as f:
+            source = f.read()
+    except Exception:
         print("Usage: %s <filename.py>" % sys.argv[0])
         sys.exit(1)
     name_generator = obfuscation_machine()
