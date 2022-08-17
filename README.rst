@@ -1,5 +1,5 @@
-pyminifier
-==========
+pyminifier3
+===========
 
 Pyminifier is a Python code minifier, obfuscator, and compressor.
 
@@ -7,6 +7,21 @@ Pyminifier is a Python code minifier, obfuscator, and compressor.
 
     * For the latest, complete documentation: http://liftoff.github.io/pyminifier/
     * For the latest code: https://github.com/liftoff/pyminifier
+
+
+Supported Python Versions
+=========================
+
+This package requires Python >= 3.
+
+
+Fork
+====
+
+This project is a fork of `pyminifier
+<https://github.com/liftoff/pyminifier>`_. The original project
+appears mostly dead and has a number of outstanding bugs (especially with
+installation under Python 3).
 
 Overview
 --------
@@ -196,7 +211,7 @@ need is Python 3 and the ``--nonlatin`` option...
      ࡅ("Forming...")
      녂=רּ("epicaricacy","perseverate")
      녂.𨠅("Codswallop")
-    # Created by pyminifier.py (https://github.com/liftoff/pyminifier)
+    # Created by pyminifier.py (https://github.com/dzhuang/pyminifier3)
 
 Yes, that code actually works *but only using Python 3*.  This is because Python
 3 supports coding in languages that use non-latin character sets.

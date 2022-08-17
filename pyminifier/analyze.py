@@ -220,7 +220,7 @@ def enumerate_global_imports(tokens):
     Returns a list of all globally imported modules (skips modules imported
     inside of classes, methods, or functions).  Example::
 
-        >>> enumerate_global_modules(tokens)
+        >>> enumerate_global_imports(tokens)
         ['sys', 'os', 'tokenize', 're']
 
     .. note::
@@ -279,7 +279,7 @@ def enumerate_dynamic_imports(tokens):
     classes or functions) in the form of {<func or class name>: [<modules>]}
 
     Example:
-        >>> enumerate_dynamic_modules(tokens)
+        >>> enumerate_dynamic_imports(tokens)
         {'myfunc': ['zlib', 'base64']}
     """
     imported_modules = []

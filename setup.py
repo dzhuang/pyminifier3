@@ -2,12 +2,12 @@ import pyminifier
 from setuptools import setup
 
 setup(
-    name="pyminifier",
+    name="pyminifier3",
     version=pyminifier.__version__,
     description="Python code minifier, obfuscator, and compressor",
     author=pyminifier.__author__,
-    author_email="daniel.mcdougall@liftoffsoftware.com",
-    url="https://github.com/liftoff/pyminifier",
+    author_email="daniel.mcdougall@liftoffsoftware.com, dzhuang.scut@gmail.com",
+    url="https://github.com/dzhuang/pyminifier3",
     license="Proprietary",
     packages=['pyminifier'],
     classifiers=[
@@ -20,10 +20,10 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
     provides=['pyminifier'],
-    entry_points = {
+    entry_points={
         'console_scripts': [
             'pyminifier = pyminifier.__main__:main'
         ],
     },
-    test_suite = "tests",
+    test_suite="tests",
 )
