@@ -221,7 +221,7 @@ def pyminify(options, files):
                   "resulting .pyz)")
             sys.exit(1)
         # Make our .pyz:
-        compression.zip_pack(files, options)
+        compression.zip_pack(files[0], options)
         return None  # Make sure we don't do anything else
     # Read in our prepend text (if any)
     prepend = None

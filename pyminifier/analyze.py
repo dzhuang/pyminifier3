@@ -397,6 +397,7 @@ def enumerate_local_modules(tokens, path):
     parent = ""
     # Now check the local dir for matching modules
     for root, dirs, files in os.walk(path):
+        root = root.replace("\\", "/")
         if not parent:
             parent = os.path.split(root)[1]
         for f in files:
