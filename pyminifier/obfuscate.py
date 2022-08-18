@@ -28,41 +28,47 @@ VAR_REPLACEMENTS = {}  # So we can reference what's already been replaced
 FUNC_REPLACEMENTS = {}
 CLASS_REPLACEMENTS = {}
 UNIQUE_REPLACEMENTS = {}
+CLASS_INSTANCE_REPLACEMENTS = {}
 
 
-def obfuscation_machine(identifier_length=1):
+def obfuscation_machine(use_unicode=False, identifier_length=1):
     """
     A generator that returns short sequential combinations of lower and
     upper-case letters that will never repeat.
+
+    If *use_unicode* is ``True``, use nonlatin cryllic, arabic, and syriac
+    letters instead of the usual ABCs.
 
     The *identifier_length* represents the length of the string to return using
     the aforementioned characters.
     """
     # This generates a list of the letters a-z:
-    # lowercase = list(map(chr, range(97, 123)))
+    lowercase = list(map(chr, range(97, 123)))
     # Same thing but ALL CAPS:
-    # uppercase = list(map(chr, range(65, 90)))
-    # Python 3 lets us have some *real* fun:
-    allowed_categories = ("LC", "Ll", "Lu", "Lo", "Lu")
-    # All the fun characters start at 1580 (hehe):
-    big_list = list(map(chr, range(1580, HIGHEST_UNICODE)))
-    max_chars = 1000  # Ought to be enough for anybody :)
-    combined = []
-    rtl_categories = ("AL", "R")  # AL == Arabic, R == Any right-to-left
-    last_orientation = "L"  # L = Any left-to-right
-    # Find a good mix of left-to-right and right-to-left characters
-    while len(combined) < max_chars:
-        char = choice(big_list)
-        if unicodedata.category(char) in allowed_categories:
-            orientation = unicodedata.bidirectional(char)
-            if last_orientation in rtl_categories:
-                if orientation not in rtl_categories:
-                    combined.append(char)
-            else:
-                if orientation in rtl_categories:
-                    combined.append(char)
-            last_orientation = orientation
-
+    uppercase = list(map(chr, range(65, 90)))
+    if use_unicode:
+        # Python 3 lets us have some *real* fun:
+        allowed_categories = ("LC", "Ll", "Lu", "Lo", "Lu")
+        # All the fun characters start at 1580 (hehe):
+        big_list = list(map(chr, range(1580, HIGHEST_UNICODE)))
+        max_chars = 1000  # Ought to be enough for anybody :)
+        combined = []
+        rtl_categories = ("AL", "R")  # AL == Arabic, R == Any right-to-left
+        last_orientation = "L"  # L = Any left-to-right
+        # Find a good mix of left-to-right and right-to-left characters
+        while len(combined) < max_chars:
+            char = choice(big_list)
+            if unicodedata.category(char) in allowed_categories:
+                orientation = unicodedata.bidirectional(char)
+                if last_orientation in rtl_categories:
+                    if orientation not in rtl_categories:
+                        combined.append(char)
+                else:
+                    if orientation in rtl_categories:
+                        combined.append(char)
+                last_orientation = orientation
+    else:
+        combined = lowercase + uppercase
     shuffle(combined)  # Randomize it all to keep things interesting
     while True:
         for perm in permutations(combined, identifier_length):
@@ -377,9 +383,9 @@ def obfuscate_variable(
     *replacement*. *right_of_equal*, and *inside_parens* are used to determine
     whether or not this token is safe to obfuscate.
     """
-    def return_replacement(replacement):
-        VAR_REPLACEMENTS[replacement] = replace
-        return replacement
+    def return_replacement(_replacement):
+        VAR_REPLACEMENTS[_replacement] = replace
+        return _replacement
     tok = tokens[index]
     token_type = tok[0]
     token_string = tok[1]
@@ -440,9 +446,9 @@ def obfuscate_function(tokens, index, replace, replacement, *args):
     If the token string (a function) inside *tokens[index]* matches *replace*,
     return *replacement*.
     """
-    def return_replacement(replacement):
-        FUNC_REPLACEMENTS[replacement] = replace
-        return replacement
+    def return_replacement(_replacement):
+        FUNC_REPLACEMENTS[_replacement] = replace
+        return _replacement
     tok = tokens[index]
     token_type = tok[0]
     token_string = tok[1]
@@ -464,6 +470,11 @@ def obfuscate_function(tokens, index, replace, replacement, *args):
             elif parent_name in VAR_REPLACEMENTS:
                 # This covers regular ol' instance methods
                 return return_replacement(replacement)
+            else:
+                # Fixing https://github.com/dzhuang/pyminifier3/issues/11
+                for _instance_name in CLASS_INSTANCE_REPLACEMENTS.values():
+                    if parent_name in _instance_name:
+                        return return_replacement(replacement)
 
 
 def obfuscate_class(tokens, index, replace, replacement, *args):
@@ -471,9 +482,9 @@ def obfuscate_class(tokens, index, replace, replacement, *args):
     If the token string (a class) inside *tokens[index]* matches *replace*,
     return *replacement*.
     """
-    def return_replacement(replacement):
-        CLASS_REPLACEMENTS[replacement] = replace
-        return replacement
+    def return_replacement(_replacement):
+        CLASS_REPLACEMENTS[_replacement] = replace
+        return _replacement
     tok = tokens[index]
     token_type = tok[0]
     token_string = tok[1]
@@ -483,6 +494,15 @@ def obfuscate_class(tokens, index, replace, replacement, *args):
         return None  # Skip this token
     if token_string.startswith("__"):
         return None
+    if token_string == replace:
+        # Fixing https://github.com/dzhuang/pyminifier3/issues/11
+        # While this fails typing
+        # fixme: # Fixing https://github.com/dzhuang/pyminifier3/issues/12
+        parent_name = tokens[index - 2][1]
+        if "{}={}".format(parent_name, replace) in tok[4]:
+            CLASS_INSTANCE_REPLACEMENTS.setdefault(replacement, [])
+            CLASS_INSTANCE_REPLACEMENTS[replacement].append(parent_name)
+
     if prev_tok_string != ".":
         if token_string == replace:
             return return_replacement(replacement)
@@ -696,7 +716,9 @@ def obfuscate(module, tokens, options, name_generator=None, table=None):
     if not name_generator:
         if options.use_nonlatin:
             ignore_length = True
-        name_generator = obfuscation_machine(identifier_length=identifier_length)
+        name_generator = obfuscation_machine(
+            use_unicode=options.use_nonlatin,
+            identifier_length=identifier_length)
     if options.obfuscate:
         variables = find_obfuscatables(
             tokens, obfuscatable_variable, ignore_length=ignore_length)
@@ -713,6 +735,9 @@ def obfuscate(module, tokens, options, name_generator=None, table=None):
                 name_generator,
                 table
             )
+        for _class in classes:
+            replace_obfuscatables(
+                module, tokens, obfuscate_class, _class, name_generator, table)
         for function in functions:
             replace_obfuscatables(
                 module,
@@ -722,9 +747,6 @@ def obfuscate(module, tokens, options, name_generator=None, table=None):
                 name_generator,
                 table
             )
-        for _class in classes:
-            replace_obfuscatables(
-                module, tokens, obfuscate_class, _class, name_generator, table)
         obfuscate_global_import_methods(module, tokens, name_generator, table)
         obfuscate_builtins(module, tokens, name_generator, table)
     else:

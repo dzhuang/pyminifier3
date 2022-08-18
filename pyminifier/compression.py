@@ -160,6 +160,7 @@ def get_name_generator(options):
         # Put together that will be used for all obfuscation functions:
         identifier_length = int(options.replacement_length)
         name_generator = obfuscate.obfuscation_machine(
+            use_unicode=options.use_nonlatin,
             identifier_length=identifier_length)
 
     return name_generator
