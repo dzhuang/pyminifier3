@@ -52,8 +52,7 @@ class TestPyMinify(unittest.TestCase):
         """
         Clean up after ourselves
         """
-        print(self.testdir)
-        # shutil.rmtree(self.testdir)
+        shutil.rmtree(self.testdir)
 
 
 if __name__ == "__main__":
