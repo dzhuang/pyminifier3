@@ -152,6 +152,19 @@ def prepend(line, path):
     shutil.move(temp_name, path)
 
 
+def get_name_generator(options):
+    name_generator = None  # So we can tell if we need to obfuscate
+    if (options.obfuscate or options.obf_classes
+            or options.obf_functions or options.obf_variables
+            or options.obf_builtins or options.obf_import_methods):
+        # Put together that will be used for all obfuscation functions:
+        identifier_length = int(options.replacement_length)
+        name_generator = obfuscate.obfuscation_machine(
+            identifier_length=identifier_length)
+
+    return name_generator
+
+
 def zip_pack(filepath, options):
     """
     Creates a zip archive containing the script at *filepath* along with all
@@ -200,41 +213,52 @@ def zip_pack(filepath, options):
         shebang += "3\n"  # #!/usr/bin/env python3
     if not options.nominify:  # Minify as long as we don't have this option set
         source = minification.minify(primary_tokens, options)
-    # Write out to a temporary file to add to our zip
-    temp = tempfile.NamedTemporaryFile(mode="w")
-    temp.write(source)
-    temp.flush()
+
+    # So we can tell if we need to obfuscate
+    name_generator = get_name_generator(options)
+
+    if name_generator:
+        tokens = token_utils.listified_tokenizer(source)
+        obfuscate.obfuscate(
+            filepath,
+            tokens,
+            options,
+            name_generator=name_generator,
+        )
+        source = token_utils.untokenize(tokens)
+
     # Need the path where the script lives for the next steps:
     path = os.path.split(filepath)[0]
+    filename = os.path.split(filepath)[1]
     if not path:
         path = os.getcwd()
     main_py = path + "/__main__.py"
     if os.path.exists(main_py):
         # There's an existing __main__.py, use it
         z.write(main_py, "__main__.py")
-        z.write(temp.name, os.path.split(filepath)[1])
+        z.writestr(filename, source)
     else:
         # No __main__.py so we rename our main script to be the __main__.py
         # This is so it will still execute as a zip
-        z.write(filepath, "__main__.py")
-    temp.close()
+        z.writestr("__main__.py", source)
+
     # Now write any required modules into the zip as well
     local_modules = analyze.enumerate_local_modules(primary_tokens, path)
-    name_generator = None  # So we can tell if we need to obfuscate
-    if (options.obfuscate or options.obf_classes
-            or options.obf_functions or options.obf_variables
-            or options.obf_builtins or options.obf_import_methods):
-        # Put together that will be used for all obfuscation functions:
-        identifier_length = int(options.replacement_length)
-        name_generator = obfuscate.obfuscation_machine(
-            identifier_length=identifier_length)
+
+    if name_generator:
         table = [{}]
+
     included_modules = []
     for module in local_modules:
         module = module.replace(".", "/")
         module = "%s.py" % module
+
+        # Avoid writing the filepath itself again
+        if module == filename:
+            continue
+
         # Add the filesize to our total
-        cumulative_size += os.path.getsize(module)
+        cumulative_size += os.path.getsize(os.path.join(path, module))
         # Also record that we've added it to the archive
         included_modules.append(module)
         # Minify these files too
@@ -263,11 +287,8 @@ def zip_pack(filepath, options):
         result = token_utils.untokenize(tokens)
         result += "{}\n".format(constants.RESULT_FOOTER)
         # Write out to a temporary file to add to our zip
-        temp = tempfile.NamedTemporaryFile(mode="w")
-        temp.write(source)
-        temp.flush()
-        z.write(temp.name, module)
-        temp.close()
+        z.writestr(module, result)
+
     z.close()
     # Finish up by writing the shebang to the beginning of the zip
     prepend(shebang, dest)
