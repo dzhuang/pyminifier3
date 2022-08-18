@@ -246,8 +246,13 @@ def pyminify(options, files):
         if any(obfuscations):
             # Put together that will be used for all obfuscation functions:
             identifier_length = int(options.replacement_length)
-            name_generator = obfuscate.obfuscation_machine(
-                identifier_length=identifier_length)
+            if options.use_nonlatin:
+                name_generator = obfuscate.obfuscation_machine(
+                    use_unicode=True, identifier_length=identifier_length
+                )
+            else:
+                name_generator = obfuscate.obfuscation_machine(
+                    identifier_length=identifier_length)
             table = [{}]
         cumulative_size = 0  # For size reduction stats
         cumulative_new = 0  # Ditto
@@ -331,6 +336,7 @@ def pyminify(options, files):
                 or options.obf_import_methods:
             identifier_length = int(options.replacement_length)
             name_generator = obfuscate.obfuscation_machine(
+                use_unicode=options.use_nonlatin,
                 identifier_length=identifier_length)
             obfuscate.obfuscate(module, tokens, options)
         # Convert back to text

@@ -31,39 +31,44 @@ UNIQUE_REPLACEMENTS = {}
 CLASS_INSTANCE_REPLACEMENTS = {}
 
 
-def obfuscation_machine(identifier_length=1):
+def obfuscation_machine(use_unicode=False, identifier_length=1):
     """
     A generator that returns short sequential combinations of lower and
     upper-case letters that will never repeat.
+
+    If *use_unicode* is ``True``, use nonlatin cryllic, arabic, and syriac
+    letters instead of the usual ABCs.
 
     The *identifier_length* represents the length of the string to return using
     the aforementioned characters.
     """
     # This generates a list of the letters a-z:
-    # lowercase = list(map(chr, range(97, 123)))
+    lowercase = list(map(chr, range(97, 123)))
     # Same thing but ALL CAPS:
-    # uppercase = list(map(chr, range(65, 90)))
-    # Python 3 lets us have some *real* fun:
-    allowed_categories = ("LC", "Ll", "Lu", "Lo", "Lu")
-    # All the fun characters start at 1580 (hehe):
-    big_list = list(map(chr, range(1580, HIGHEST_UNICODE)))
-    max_chars = 1000  # Ought to be enough for anybody :)
-    combined = []
-    rtl_categories = ("AL", "R")  # AL == Arabic, R == Any right-to-left
-    last_orientation = "L"  # L = Any left-to-right
-    # Find a good mix of left-to-right and right-to-left characters
-    while len(combined) < max_chars:
-        char = choice(big_list)
-        if unicodedata.category(char) in allowed_categories:
-            orientation = unicodedata.bidirectional(char)
-            if last_orientation in rtl_categories:
-                if orientation not in rtl_categories:
-                    combined.append(char)
-            else:
-                if orientation in rtl_categories:
-                    combined.append(char)
-            last_orientation = orientation
-
+    uppercase = list(map(chr, range(65, 90)))
+    if use_unicode:
+        # Python 3 lets us have some *real* fun:
+        allowed_categories = ("LC", "Ll", "Lu", "Lo", "Lu")
+        # All the fun characters start at 1580 (hehe):
+        big_list = list(map(chr, range(1580, HIGHEST_UNICODE)))
+        max_chars = 1000  # Ought to be enough for anybody :)
+        combined = []
+        rtl_categories = ("AL", "R")  # AL == Arabic, R == Any right-to-left
+        last_orientation = "L"  # L = Any left-to-right
+        # Find a good mix of left-to-right and right-to-left characters
+        while len(combined) < max_chars:
+            char = choice(big_list)
+            if unicodedata.category(char) in allowed_categories:
+                orientation = unicodedata.bidirectional(char)
+                if last_orientation in rtl_categories:
+                    if orientation not in rtl_categories:
+                        combined.append(char)
+                else:
+                    if orientation in rtl_categories:
+                        combined.append(char)
+                last_orientation = orientation
+    else:
+        combined = lowercase + uppercase
     shuffle(combined)  # Randomize it all to keep things interesting
     while True:
         for perm in permutations(combined, identifier_length):
@@ -711,7 +716,9 @@ def obfuscate(module, tokens, options, name_generator=None, table=None):
     if not name_generator:
         if options.use_nonlatin:
             ignore_length = True
-        name_generator = obfuscation_machine(identifier_length=identifier_length)
+        name_generator = obfuscation_machine(
+            use_unicode=options.use_nonlatin,
+            identifier_length=identifier_length)
     if options.obfuscate:
         variables = find_obfuscatables(
             tokens, obfuscatable_variable, ignore_length=ignore_length)
