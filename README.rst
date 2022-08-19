@@ -1,3 +1,13 @@
+Note
+=========================
+You should consider using `python-minifier <https://github.com/dflook/python-minifier>`_
+instead of this package, because there are known issues with this package,
+including but not limited to:
+
+* Does NOT working (well) with `class` members
+* Does NOT support `f-string`
+* Does NOT support annotations parse/remove
+
 pyminifier3
 ===========
 
@@ -185,8 +195,6 @@ Minifying by itself can reduce code size considerably but pyminifier can go
 further by obfuscating the code.  What that means is that it will replace the
 names of things like variables and functions to the smallest possible size.
 
-To see more examples of pyminifier in action (e.g. compression features) see the
-`full documentation <http://liftoff.github.io/pyminifier/>`_
 
 Special Sauce
 -------------
@@ -197,32 +205,32 @@ need is the ``--nonlatin`` option...
 .. code-block:: python
 
   #!/usr/bin/env python3
-  ﭿ=ImportError
-  �=print
-  㢑=False
-  ﷀ=object
+  𐲄=ImportError
+  餍=print
+  ﴦ=False
+  ﲷ=object
   try:
    import demiurgic
-  except ﭿ:
-   �("Warning: You're not demiurgic. Actually, I think that's normal.")
+  except 𐲄:
+   餍("Warning: You're not demiurgic. Actually, I think that's normal.")
   try:
    import mystificate
-  except ﭿ:
-   �("Warning: Dark voodoo may be unreliable.")
-  �=㢑
-  class 磂(ﷀ):
+  except 𐲄:
+   餍("Warning: Dark voodoo may be unreliable.")
+  ﵛ=ﴦ
+  class 𦵄(ﲷ):
    def __init__(self,*args,**kwargs):
     pass
-   def �(self,dactyl):
-    ꂋ=demiurgic.palpitation(dactyl)
-    �=mystificate.dark_voodoo(ꂋ)
-    return �
-   def ڠ(self,whatever):
-    �(whatever)
+   def 𞡡(self,dactyl):
+    ﮉ=demiurgic.palpitation(dactyl)
+    ﲽ=mystificate.dark_voodoo(ﮉ)
+    return ﲽ
+   def 𬇷(self,whatever):
+    餍(whatever)
   if __name__=="__main__":
-   �("Forming...")
-   �=磂("epicaricacy","perseverate")
-   �.ڠ("Codswallop")
+   餍("Forming...")
+   𞸉=𦵄("epicaricacy","perseverate")
+   𞸉.𬇷("Codswallop")
   # Created by pyminifier (https://github.com/dzhuang/pyminifier3)
 
 

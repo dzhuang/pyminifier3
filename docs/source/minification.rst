@@ -2,6 +2,7 @@
 ===================================================
 
 .. moduleauthor:: Dan McDougall (daniel.mcdougall@liftoffsoftware.com)
+.. moduleauthor:: Dong Zhuang (dzhuang.scut@gmail.com)
 
 .. automodule:: pyminifier.minification
     :members:

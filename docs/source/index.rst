@@ -73,16 +73,18 @@ arguments:
                           The length of the random names that will be used when
                             obfuscating identifiers.
     --nonlatin            Use non-latin (unicode) characters in obfuscation
-                            (Python 3 only).  WARNING: This results in some
+                              WARNING: This results in some
                             SERIOUSLY hard-to-read code.
     --prepend=<file path>
                           Prepend the text in this file to the top of our
                             output.  e.g. A copyright notice.
 
 For the examples below we'll be minifying, obfuscating, and compressing the
-following totally made-up Python script (saved to ``/tmp/tumult.py``)::
+following totally made-up Python script (in repository ``tests/files/tumult.py``).
 
-    #!/usr/bin/env python
+.. code-block:: python
+
+    #!/usr/bin/env python3
     """
     tumult.py - Because everyone needs a little chaos every now and again.
     """
@@ -97,7 +99,8 @@ following totally made-up Python script (saved to ``/tmp/tumult.py``)::
         print("Warning: Dark voodoo may be unreliable.")
 
     # Globals
-    ATLAS = False # Nothing holds up the world by default
+    ATLAS = False  # Nothing holds up the world by default
+
 
     class Foo(object):
         """
@@ -107,7 +110,7 @@ following totally made-up Python script (saved to ``/tmp/tumult.py``)::
         """
         def __init__(self, *args, **kwargs):
             """
-            The initialization vector whereby the ineffiably obstreperous
+            The initialization vector whereby the ineffably obstreperous
             becomes paramount.
             """
             # TODO.  BTW: What happens if we remove that docstring? :)
@@ -116,7 +119,7 @@ following totally made-up Python script (saved to ``/tmp/tumult.py``)::
             """
             A vainglorious implementation of bedizenment.
             """
-            inception = demiurgic.palpitation(dactyl) # Note the imported call
+            inception = demiurgic.palpitation(dactyl)  # Note the imported call
             demarcation = mystificate.dark_voodoo(inception)
             return demarcation
 
@@ -126,20 +129,29 @@ following totally made-up Python script (saved to ``/tmp/tumult.py``)::
             """
             print(whatever)
 
+
     if __name__ == "__main__":
         print("Forming...")
         f = Foo("epicaricacy", "perseverate")
         f.test("Codswallop")
 
+
 By default pyminifier will perform basic minification and print the resulting
 code to stdout:
 
-.. note:: The tumult.py script is 1358 bytes.  Remember that.
+.. note:: The tumult.py script is 1411 bytes.  Remember that.
+
+Run the following command in your console:
 
 .. code-block:: sh
 
-    $ pyminifier /tmp/tumult.py
-    #!/usr/bin/env python
+    $ pyminifier tests/files/tumult.py
+
+We will get:
+
+.. code-block:: python
+
+    #!/usr/bin/env python3
     try:
      import demiurgic
     except ImportError:
@@ -162,59 +174,69 @@ code to stdout:
      print("Forming...")
      f=Foo("epicaricacy","perseverate")
      f.test("Codswallop")
-    # Created by pyminifier.py (https://github.com/liftoff/pyminifier)
+    # Created by pyminifier (https://github.com/dzhuang/pyminifier3)
 
-This reduced the size of tumult.py from 1358 bytes to 640 bytes.  Not bad!
+This reduced the size of tumult.py from 1411 bytes to 700 bytes.  Not bad!
 
 Minifying by itself can reduce code size considerably but pyminifier can go
 further by obfuscating the code.  What that means is that it will replace the
-names of things like variables and functions to the smallest possible size:
+names of things like variables and functions to the smallest possible size, with:
 
 .. code-block:: sh
 
-    $ pyminifier --obfuscate /tmp/tumult.py
-    #!/usr/bin/env python
-    T=ImportError
-    q=print
-    m=False
-    O=object
-    try:
-     import demiurgic
-    except T:
-     q("Warning: You're not demiurgic. Actually, I think that's normal.")
-    try:
-     import mystificate
-    except T:
-     q("Warning: Dark voodoo may be unreliable.")
-    Q=m
-    class U(O):
-     def __init__(self,*args,**kwargs):
-      pass
-     def B(self,dactyl):
-      G=demiurgic.palpitation(dactyl)
-      w=mystificate.dark_voodoo(G)
-      return w
-     def k(self,whatever):
-      q(whatever)
-    if __name__=="__main__":
-     q("Forming...")
-     f=U("epicaricacy","perseverate")
-     f.test("Codswallop")
-    # Created by pyminifier.py (https://github.com/liftoff/pyminifier)
+    pyminifier --obfuscate tests/files/tumult.py
+
+We will get:
+
+.. code-block:: python
+
+     #!/usr/bin/env python3
+     𐲄=ImportError
+     餍=print
+     ﴦ=False
+     ﲷ=object
+     try:
+      import demiurgic
+     except 𐲄:
+      餍("Warning: You're not demiurgic. Actually, I think that's normal.")
+     try:
+      import mystificate
+     except 𐲄:
+      餍("Warning: Dark voodoo may be unreliable.")
+     ﵛ=ﴦ
+     class 𦵄(ﲷ):
+      def __init__(self,*args,**kwargs):
+       pass
+      def 𞡡(self,dactyl):
+       ﮉ=demiurgic.palpitation(dactyl)
+       ﲽ=mystificate.dark_voodoo(ﮉ)
+       return ﲽ
+      def 𬇷(self,whatever):
+       餍(whatever)
+     if __name__=="__main__":
+      餍("Forming...")
+      𞸉=𦵄("epicaricacy","perseverate")
+      𞸉.𬇷("Codswallop")
+     # Created by pyminifier (https://github.com/dzhuang/pyminifier3)
+
+
 
 That's all fine and good but pyminifier can go the extra mile and also
 *compress* your code using gzip, bz2, or even lzma using a special container:
 
 .. code-block:: sh
 
-    $ pyminifier --obfuscate --gzip /tmp/tumult.py
-    #!/usr/bin/env python3
-    import zlib, base64
-    exec(zlib.decompress(base64.b64decode('eJx1kcFOwzAMhu95ClMO66apu0/KAQEbE5eJC+IUpa27haVJ5Ljb+vakLYJx4JAoiT/7/+3c3626SKvSuBW6M4Sej96Jq9y1wRM/E3kSexnIOBZObrSNKI7Sl59YsWDq1wLMiEKNrenoYCqB1woDwzXF9nn2rskZd1jDh+9mhOD8DVvAQ8WdtrZfwg74aNwp7ZpnMXHUaltk878ybR/ZNKbSjP8JPWk6wdn72ntodQ8lQucIrdGlxaHgq3QgKqtjhCY/zlN6jQ0oZZxhpfKItlkuNB3icrE4XYbDwEBICRP6NjG1rri3YyzK356CtsGwZuNd/o0kYitvrBd18qgmj3kcwoTckYPtJPAyCVzSKPCMNErs85+rMINdp1tUSspMqVYbp1Q2DWKTJpcGURRDr9DIJs8wJFlKq+qzZRaQ4lAnVRuJgjFynj36Ol7SX/iQXr8ANfezCw==')))
-    # Created by pyminifier.py (https://github.com/liftoff/pyminifier)
+      $ pyminifier --obfuscate --gzip tests/files/tumult.py
+      #!/usr/bin/env python3
+      import zlib, base64
+      exec(zlib.decompress(base64.b64decode('eJx1kT1vwjAQhnf/iqs7EFAUhm5IHqpSEDNIiMlykgu4OLZ1doD8+zpJ1Y+hgy3b99y9752fn5ZdoGWp7RLtDXwfL86+sJPYtd5RfCdyxA7Ck7aRHcVGmYBsK1z5gVVkkfoVAz2iUGOrOzrriuGjQh/hlGKHjB8VWW3PKzi5bkYI1v1iC3itYqeM6XPYQbxoe
+      027irOQOGqVKfj8r0zbh6gbXamI/wmtFV3h5lztHLSqhxKhs4RGq9LgUHAtjqwyKgRosu08ZdfYgJTa6ihlFtA0+ULROeSLxfU+HAYGfEqY0M3E1KqKvRljD/HTklfG66iidjb7QhLhxC/nRZ0sysli9hjChLEjC24S2E8C9zQJvCGNEofs+8r0YNeqFqUUgkvZKm2l5NMcNmlwaQ5FMbQKjWgyjj7JUlpVz3Puk
+      cJQJ1UbiWKf8TdXh3v6B+fT0ycIYrFK')))
+      # Created by pyminifier (https://github.com/dzhuang/pyminifier3)
 
-That created a 572 byte file...  Not much saved over basic minification
-which producted a 640 byte file.  This is because the input file was so small
+
+That created a 696 byte file...  Not much saved over basic minification
+which producted a 700 byte file.  This is because the input file was so small
 to begin with.  There's potential to save a lot more space with larger scripts.
 Why the heck would you ever want to use such a strange method of compressing
 Python code?  Only one reason:
@@ -249,18 +271,18 @@ pyminifier will automatically find locally-imported modules and include them in
 the container (more on this below).
 
 To properly demonstrate the effectiveness of each minification, obfuscation,
-and compression method we'll minify the pyminifier.py code itself.  Here's the
+and compression method we'll minify the pyminifier `__init__.py` code itself.  Here's the
 results:
 
     ================ =========   ===========
     Method           File Size   % Reduction
     ================ =========   ===========
-    pyminifier.py    17987       0%
-    minification     8403        53.28%
-    plus obfuscation 6699        62.76%
-    with gzip        3480        80.65%
-    with bz2         3782        78.97%
-    with lzma        3572        80.14%
+    \_\_init\_\_.py    15818       0%
+    minification     10108       35.77%
+    plus obfuscation 8692        44.89%
+    with gzip        4804        69.40%
+    with bzip2       4986        68.30%
+    with lzma        4844        69.17%
     ================ =========   ===========
 
 .. note::
@@ -268,21 +290,21 @@ results:
     The sizes of these files may change over time.  The sizes used here were
     taken at the time this documentation was written.
 
-For the .pyz comparison we'll need to add up the total sum of pyminifier.py
+For the .pyz comparison we'll need to add up the total sum of pyminifier `__init__.py`
 plus all it's sister modules (since it imports them all at some point):
 
     =============== =====
     File            Bytes
     =============== =====
-    analyze.py      12259
-    compression.py  11293
-    minification.py 18639
-    obfuscate.py    26474
-    pyminifier.py   17987
-    token_utils.py  1175
+    analyze.py      12942
+    compression.py  11564
+    minification.py 15016
+    obfuscate.py    31757
+    \_\_main\_\_.py   6402
+    token_utils.py  1283
     =============== =====
 
-The total sum of all files is 87827 bytes.  In order to properly compare the
+The total sum of all files is 94739 bytes.  In order to properly compare the
 various output options we'll need to perform the same test we performed above
 but for all those files.  To do things like this pyminifier includes the
 ``--destdir`` option.  It will save all minified/obfuscated/compressed files
@@ -293,17 +315,18 @@ Pyminifier can also work on a whole directory of Python scripts:
 
 .. code-block:: sh
 
-    $ pyminifier --destdir=/tmp/minified_pyminifier pyminifier/*.py
-    pyminifier/analyze.py (12259) reduced to 7009 bytes (57.17% of original size)
-    pyminifier/compression.py (11293) reduced to 4880 bytes (43.21% of original size)
-    pyminifier/__init__.py (284) reduced to 193 bytes (67.96% of original size)
-    pyminifier/minification.py (18639) reduced to 8586 bytes (46.06% of original size)
-    pyminifier/obfuscate.py (26474) reduced to 13582 bytes (51.3% of original size)
-    pyminifier/pyminifier.py (17987) reduced to 8439 bytes (46.92% of original size)
-    pyminifier/token_utils.py (1175) reduced to 604 bytes (51.4% of original size)
-    Overall size reduction: 49.13% of original size
-    $ du -hs /tmp/minified_pyminifier/
-    64K     /tmp/minified_pyminifier/
+      $ pyminifier --destdir=/tmp/minified_pyminifier pyminifier/*.py
+      pyminifier\analyze.py (12942) reduced to 7378 bytes (57.01% of original size)
+      pyminifier\compression.py (11564) reduced to 6406 bytes (55.4% of original size)
+      pyminifier\minification.py (15016) reduced to 6887 bytes (45.86% of original size)
+      pyminifier\obfuscate.py (31757) reduced to 16309 bytes (51.36% of original size)
+      pyminifier\token_utils.py (1283) reduced to 724 bytes (56.43% of original size)
+      pyminifier\__init__.py (15818) reduced to 10185 bytes (64.39% of original size)
+      pyminifier\__main__.py (6402) reduced to 4551 bytes (71.09% of original size)
+      Overall size reduction: 55.33% of original size
+
+      $ du -hs /tmp/minified_pyminifier/
+      64K     /tmp/minified_pyminifier/
 
 Not bad!  Not bad at all--for defaults!
 
@@ -313,31 +336,33 @@ Let's see what we get using some other compression options:
 
 .. code-block:: sh
 
-    $ rm -rf /tmp/minified_pyminifier # Clean up after ourselves first
-    $ pyminifier --destdir=/tmp/minified_pyminifier --gzip pyminifier/*.py
-    pyminifier/analyze.py (12259) reduced to 2773 bytes (22.62% of original size)
-    pyminifier/compression.py (11293) reduced to 2165 bytes (19.17% of original size)
-    pyminifier/__init__.py (284) reduced to 289 bytes (101.76% of original size)
-    pyminifier/minification.py (18639) reduced to 2829 bytes (15.18% of original size)
-    pyminifier/obfuscate.py (26474) reduced to 3924 bytes (14.82% of original size)
-    pyminifier/pyminifier.py (17987) reduced to 3652 bytes (20.3% of original size)
-    pyminifier/token_utils.py (1175) reduced to 497 bytes (42.3% of original size)
-    Overall size reduction: 18.31% of original size
+      $ rm -rf /tmp/minified_pyminifier # Clean up after ourselves first
+      $ pyminifier --destdir=/tmp/minified_pyminifier --gzip pyminifier/*.py
+      pyminifier\analyze.py (12942) reduced to 2828 bytes (21.85% of original size)
+      pyminifier\compression.py (11564) reduced to 2668 bytes (23.07% of original size)
+      pyminifier\minification.py (15016) reduced to 2404 bytes (16.01% of original size)
+      pyminifier\obfuscate.py (31757) reduced to 4400 bytes (13.86% of original size)
+      pyminifier\token_utils.py (1283) reduced to 572 bytes (44.58% of original size)
+      pyminifier\__init__.py (15818) reduced to 4844 bytes (30.62% of original size)
+      pyminifier\__main__.py (6402) reduced to 2140 bytes (33.43% of original size)
+      Overall size reduction: 20.95% of original size
+
 
 **BZIP2**
 
 .. code-block:: sh
 
-    $ rm -rf /tmp/minified_pyminifier # Clean up after ourselves first
-    $ pyminifier --destdir=/tmp/minified_pyminifier --bzip2 pyminifier/*.py
-    pyminifier/analyze.py (12259) reduced to 2951 bytes (24.07% of original size)
-    pyminifier/compression.py (11293) reduced to 2435 bytes (21.56% of original size)
-    pyminifier/__init__.py (284) reduced to 327 bytes (115.14% of original size)
-    pyminifier/minification.py (18639) reduced to 2995 bytes (16.07% of original size)
-    pyminifier/obfuscate.py (26474) reduced to 3986 bytes (15.06% of original size)
-    pyminifier/pyminifier.py (17987) reduced to 3926 bytes (21.83% of original size)
-    pyminifier/token_utils.py (1175) reduced to 555 bytes (47.23% of original size)
-    Overall size reduction: 19.49% of original size
+      $ rm -rf /tmp/minified_pyminifier # Clean up after ourselves first
+      $ pyminifier --destdir=/tmp/minified_pyminifier --bzip2 pyminifier/*.py
+      pyminifier\analyze.py (12942) reduced to 3010 bytes (23.26% of original size)
+      pyminifier\compression.py (11521) reduced to 2958 bytes (25.67% of original size)
+      pyminifier\minification.py (15016) reduced to 2570 bytes (17.12% of original size)
+      pyminifier\obfuscate.py (31757) reduced to 4486 bytes (14.13% of original size)
+      pyminifier\token_utils.py (1283) reduced to 638 bytes (49.73% of original size)
+      pyminifier\__init__.py (15818) reduced to 5018 bytes (31.72% of original size)
+      pyminifier\__main__.py (6402) reduced to 2318 bytes (36.21% of original size)
+      Overall size reduction: 22.16% of original size
+
 
 .. note::
 
@@ -347,34 +372,41 @@ Let's see what we get using some other compression options:
 
 .. code-block:: sh
 
-    $ rm -rf /tmp/minified_pyminifier # Clean up after ourselves first
-    $ pyminifier --destdir=/tmp/minified_pyminifier --lzma pyminifier/*.py
-    pyminifier/analyze.py (12259) reduced to 2801 bytes (22.85% of original size)
-    pyminifier/compression.py (11293) reduced to 2273 bytes (20.13% of original size)
-    pyminifier/__init__.py (284) reduced to 361 bytes (127.11% of original size)
-    pyminifier/minification.py (18639) reduced to 2881 bytes (15.46% of original size)
-    pyminifier/obfuscate.py (26474) reduced to 3904 bytes (14.75% of original size)
-    pyminifier/pyminifier.py (17987) reduced to 3720 bytes (20.68% of original size)
-    pyminifier/token_utils.py (1175) reduced to 601 bytes (51.15% of original size)
-    Overall size reduction: 18.77% of original size
+      $ rm -rf /tmp/minified_pyminifier # Clean up after ourselves first
+      $ pyminifier --destdir=/tmp/minified_pyminifier --lzma pyminifier/*.py
+      pyminifier\analyze.py (12942) reduced to 2848 bytes (22.01% of original size)
+      pyminifier\compression.py (11564) reduced to 2772 bytes (23.97% of original size)
+      pyminifier\minification.py (15016) reduced to 2480 bytes (16.52% of original size)
+      pyminifier\obfuscate.py (31757) reduced to 4340 bytes (13.67% of original size)
+      pyminifier\token_utils.py (1283) reduced to 688 bytes (53.62% of original size)
+      pyminifier\__init__.py (15818) reduced to 4880 bytes (30.85% of original size)
+      pyminifier\__main__.py (6402) reduced to 2272 bytes (35.49% of original size)
+      Overall size reduction: 21.4% of original size
+
+
+.. warning::
+
+The pyz example does not work.
+
 
 Now let's try that .pyz container format.  It can't be that much better, right?
 WRONG:
 
 .. code-block:: sh
 
-    $ pyminifier --pyz=/tmp/pyminifier.pyz pyminifier.py
-    pyminifier.py saved as compressed executable zip: /tmp/pyminifier.pyz
-    The following modules were automatically included (as automagic dependencies):
+      $ pyminifier --pyz=/tmp/pyminifier.pyz pyminifier/__main__.py
+      pyminifier/__main__.py saved as compressed executable zip: /tmp/pyminifier.pyz
+      The following modules were automatically included (as automagic dependencies):
 
-            obfuscate.py
-            minification.py
-            token_utils.py
-            compression.py
-            analyze.py
+              analyze.py
+              compression.py
+              minification.py
+              obfuscate.py
+              token_utils.py
+              \_\_init\_\_.py
 
-    Overall size reduction: 16.64% of original size
-    $ # NOTE: Resulting file is 14617 bytes
+      Overall size reduction: 17.85% of original size
+      $ # NOTE: Resulting file is 16911 bytes
 
 Now that's some space-savings!  But does it actually work?  Let's test out that
 pyminifier.pyz by re-minifying tumult.py...
@@ -419,34 +451,35 @@ need is Python 3 and the ``--nonlatin`` option...
 
 .. code-block:: sh
 
-    #!/usr/bin/env python3
-    ﵛ=ImportError
-    ࡅ=print
-    㮀=False
-    搓=object
-    try:
-     import demiurgic
-    except ﵛ:
-    ࡅ("Warning: You're not demiurgic. Actually, I think that's normal.")
-    try:
-     import mystificate
-    except ﵛ:
-    ࡅ("Warning: Dark voodoo may be unreliable.")
-    ﵩ=㮀
-    class רּ(搓):
-     def __init__(self,*args,**kwargs):
-      pass
-     def 𐨱(self,dactyl):
-      ﱲ=demiurgic.palpitation(dactyl)
-      ꁁ=mystificate.dark_voodoo(ﱲ)
-      return ꁁ
-     def 𨠅(self,whatever):
-      ࡅ(whatever)
-    if __name__=="__main__":
-     ࡅ("Forming...")
-     녂=רּ("epicaricacy","perseverate")
-     녂.𨠅("Codswallop")
-    # Created by pyminifier.py (https://github.com/liftoff/pyminifier)
+  #!/usr/bin/env python3
+  𐲄=ImportError
+  餍=print
+  ﴦ=False
+  ﲷ=object
+  try:
+   import demiurgic
+  except 𐲄:
+   餍("Warning: You're not demiurgic. Actually, I think that's normal.")
+  try:
+   import mystificate
+  except 𐲄:
+   餍("Warning: Dark voodoo may be unreliable.")
+  ﵛ=ﴦ
+  class 𦵄(ﲷ):
+   def __init__(self,*args,**kwargs):
+    pass
+   def 𞡡(self,dactyl):
+    ﮉ=demiurgic.palpitation(dactyl)
+    ﲽ=mystificate.dark_voodoo(ﮉ)
+    return ﲽ
+   def 𬇷(self,whatever):
+    餍(whatever)
+  if __name__=="__main__":
+   餍("Forming...")
+   𞸉=𦵄("epicaricacy","perseverate")
+   𞸉.𬇷("Codswallop")
+  # Created by pyminifier (https://github.com/dzhuang/pyminifier3)
+
 
 Yes, that code actually works *but only using Python 3*.  This is because Python
 3 supports coding in languages that use non-latin character sets.
@@ -465,35 +498,36 @@ minimize the amount of characters used for replacements let's make them HUGE:
 
 .. code-block:: sh
 
-    $ pyminifier --nonlatin --replacement-length=50 /tmp/tumult.py
-    #!/usr/bin/env python3
-    ﺭ异𞸐𐤔ﭞﰣﺁں𝕌𨿩𞸇뻛𐬑𥰫嬭ﱌ𢽁𐡆𧪮Ꝫﴹ뙫𢤴퉊ﳦﲣפּܟﺶ𐐤ﶨࠔ𐰷𢡶𧐎𐭈𞸏𢢘𦘼ﶻ𩏃𦽨𞺎𠛘𐠲䉊ﰸﭳᣲמּ=ImportError
-    ﺭ异𞸐𐤔ﭞﰣﺁں𝕌𨿩𞸇뻛𐬑𥰫嬭ﱌ𢽁𐡆𧪮Ꝫﴹ뙫𢤴퉊ﳦﲣפּܟﺶ𐐤ﶨࠔ𐰷𢡶𧐎𐭈𞸏𢢘𦘼ﶻ𩏃𦽨𞺎𠛘𐠲䉊ﰸﭳᣲ燱=print
-    ﺭ异𞸐𐤔ﭞﰣﺁں𝕌𨿩𞸇뻛𐬑𥰫嬭ﱌ𢽁𐡆𧪮Ꝫﴹ뙫𢤴퉊ﳦﲣפּܟﺶ𐐤ﶨࠔ𐰷𢡶𧐎𐭈𞸏𢢘𦘼ﶻ𩏃𦽨𞺎𠛘𐠲䉊ﰸﭳᣲ巡=False
-    ﺭ异𞸐𐤔ﭞﰣﺁں𝕌𨿩𞸇뻛𐬑𥰫嬭ﱌ𢽁𐡆𧪮Ꝫﴹ뙫𢤴퉊ﳦﲣפּܟﺶ𐐤ﶨࠔ𐰷𢡶𧐎𐭈𞸏𢢘𦘼ﶻ𩏃𦽨𞺎𠛘𐠲䉊ﰸﭳᣲ澨=object
-    try:
-     import demiurgic
-    except ﺭ异𞸐𐤔ﭞﰣﺁں𝕌𨿩𞸇뻛𐬑𥰫嬭ﱌ𢽁𐡆𧪮Ꝫﴹ뙫𢤴퉊ﳦﲣפּܟﺶ𐐤ﶨࠔ𐰷𢡶𧐎𐭈𞸏𢢘𦘼ﶻ𩏃𦽨𞺎𠛘𐠲䉊ﰸﭳᣲמּ:
-     ﺭ异𞸐𐤔ﭞﰣﺁں𝕌𨿩𞸇뻛𐬑𥰫嬭ﱌ𢽁𐡆𧪮Ꝫﴹ뙫𢤴퉊ﳦﲣפּܟﺶ𐐤ﶨࠔ𐰷𢡶𧐎𐭈𞸏𢢘𦘼ﶻ𩏃𦽨𞺎𠛘𐠲䉊ﰸﭳᣲ燱("Warning: You're not demiurgic. Actually, I think that's normal.")
-    try:
-     import mystificate
-    except ﺭ异𞸐𐤔ﭞﰣﺁں𝕌𨿩𞸇뻛𐬑𥰫嬭ﱌ𢽁𐡆𧪮Ꝫﴹ뙫𢤴퉊ﳦﲣפּܟﺶ𐐤ﶨࠔ𐰷𢡶𧐎𐭈𞸏𢢘𦘼ﶻ𩏃𦽨𞺎𠛘𐠲䉊ﰸﭳᣲמּ:
-     ﺭ异𞸐𐤔ﭞﰣﺁں𝕌𨿩𞸇뻛𐬑𥰫嬭ﱌ𢽁𐡆𧪮Ꝫﴹ뙫𢤴퉊ﳦﲣפּܟﺶ𐐤ﶨࠔ𐰷𢡶𧐎𐭈𞸏𢢘𦘼ﶻ𩏃𦽨𞺎𠛘𐠲䉊ﰸﭳᣲ燱("Warning: Dark voodoo may be unreliable.")
-    ﺭ异𞸐𐤔ﭞﰣﺁں𝕌𨿩𞸇뻛𐬑𥰫嬭ﱌ𢽁𐡆𧪮Ꝫﴹ뙫𢤴퉊ﳦﲣפּܟﺶ𐐤ﶨࠔ𐰷𢡶𧐎𐭈𞸏𢢘𦘼ﶻ𩏃𦽨𞺎𠛘𐠲䉊ﰸﭳᣲﺬ=ﺭ异𞸐𐤔ﭞﰣﺁں𝕌𨿩𞸇뻛𐬑𥰫嬭ﱌ𢽁𐡆𧪮Ꝫﴹ뙫𢤴퉊ﳦﲣפּܟﺶ𐐤ﶨࠔ𐰷𢡶𧐎𐭈𞸏𢢘𦘼ﶻ𩏃𦽨𞺎𠛘𐠲䉊ﰸﭳᣲ巡
-    class ﺭ异𞸐𐤔ﭞﰣﺁں𝕌𨿩𞸇뻛𐬑𥰫嬭ﱌ𢽁𐡆𧪮Ꝫﴹ뙫𢤴퉊ﳦﲣפּܟﺶ𐐤ﶨࠔ𐰷𢡶𧐎𐭈𞸏𢢘𦘼ﶻ𩏃𦽨𞺎𠛘𐠲䉊ﰸﭳᣲ𐦚(ﺭ异𞸐𐤔ﭞﰣﺁں𝕌𨿩𞸇뻛𐬑𥰫嬭ﱌ𢽁𐡆𧪮Ꝫﴹ뙫𢤴퉊ﳦﲣפּܟﺶ𐐤ﶨࠔ𐰷𢡶𧐎𐭈𞸏𢢘𦘼ﶻ𩏃𦽨𞺎𠛘𐠲䉊ﰸﭳᣲ澨):
-     def __init__(self,*args,**kwargs):
-      pass
-     def ﺭ异𞸐𐤔ﭞﰣﺁں𝕌𨿩𞸇뻛𐬑𥰫嬭ﱌ𢽁𐡆𧪮Ꝫﴹ뙫𢤴퉊ﳦﲣפּܟﺶ𐐤ﶨࠔ𐰷𢡶𧐎𐭈𞸏𢢘𦘼ﶻ𩏃𦽨𞺎𠛘𐠲䉊ﰸﭳᣲ클(self,dactyl):
-      ﺭ异𞸐𐤔ﭞﰣﺁں𝕌𨿩𞸇뻛𐬑𥰫嬭ﱌ𢽁𐡆𧪮Ꝫﴹ뙫𢤴퉊ﳦﲣפּܟﺶ𐐤ﶨࠔ𐰷𢡶𧐎𐭈𞸏𢢘𦘼ﶻ𩏃𦽨𞺎𠛘𐠲䉊ﰸﭳᣲ퐐=demiurgic.palpitation(dactyl)
-      ﺭ异𞸐𐤔ﭞﰣﺁں𝕌𨿩𞸇뻛𐬑𥰫嬭ﱌ𢽁𐡆𧪮Ꝫﴹ뙫𢤴퉊ﳦﲣפּܟﺶ𐐤ﶨࠔ𐰷𢡶𧐎𐭈𞸏𢢘𦘼ﶻ𩏃𦽨𞺎𠛘𐠲䉊ﰸﭳᣲ𠛲=mystificate.dark_voodoo(ﺭ异𞸐𐤔ﭞﰣﺁں𝕌𨿩𞸇뻛𐬑𥰫嬭ﱌ𢽁𐡆𧪮Ꝫﴹ뙫𢤴퉊ﳦﲣפּܟﺶ𐐤ﶨࠔ𐰷𢡶𧐎𐭈𞸏𢢘𦘼ﶻ𩏃𦽨𞺎𠛘𐠲䉊ﰸﭳᣲ퐐)
-      return ﺭ异𞸐𐤔ﭞﰣﺁں𝕌𨿩𞸇뻛𐬑𥰫嬭ﱌ𢽁𐡆𧪮Ꝫﴹ뙫𢤴퉊ﳦﲣפּܟﺶ𐐤ﶨࠔ𐰷𢡶𧐎𐭈𞸏𢢘𦘼ﶻ𩏃𦽨𞺎𠛘𐠲䉊ﰸﭳᣲ𠛲
-     def ﺭ异𞸐𐤔ﭞﰣﺁں𝕌𨿩𞸇뻛𐬑𥰫嬭ﱌ𢽁𐡆𧪮Ꝫﴹ뙫𢤴퉊ﳦﲣפּܟﺶ𐐤ﶨࠔ𐰷𢡶𧐎𐭈𞸏𢢘𦘼ﶻ𩏃𦽨𞺎𠛘𐠲䉊ﰸﭳᣲ𐠯(self,whatever):
-      ﺭ异𞸐𐤔ﭞﰣﺁں𝕌𨿩𞸇뻛𐬑𥰫嬭ﱌ𢽁𐡆𧪮Ꝫﴹ뙫𢤴퉊ﳦﲣפּܟﺶ𐐤ﶨࠔ𐰷𢡶𧐎𐭈𞸏𢢘𦘼ﶻ𩏃𦽨𞺎𠛘𐠲䉊ﰸﭳᣲ燱(whatever)
-    if __name__=="__main__":
-     ﺭ异𞸐𐤔ﭞﰣﺁں𝕌𨿩𞸇뻛𐬑𥰫嬭ﱌ𢽁𐡆𧪮Ꝫﴹ뙫𢤴퉊ﳦﲣפּܟﺶ𐐤ﶨࠔ𐰷𢡶𧐎𐭈𞸏𢢘𦘼ﶻ𩏃𦽨𞺎𠛘𐠲䉊ﰸﭳᣲ燱("Forming...")
-     ﺭ异𞸐𐤔ﭞﰣﺁں𝕌𨿩𞸇뻛𐬑𥰫嬭ﱌ𢽁𐡆𧪮Ꝫﴹ뙫𢤴퉊ﳦﲣפּܟﺶ𐐤ﶨࠔ𐰷𢡶𧐎𐭈𞸏𢢘𦘼ﶻ𩏃𦽨𞺎𠛘𐠲䉊ﰸﭳᣲﺃ=ﺭ异𞸐𐤔ﭞﰣﺁں𝕌𨿩𞸇뻛𐬑𥰫嬭ﱌ𢽁𐡆𧪮Ꝫﴹ뙫𢤴퉊ﳦﲣפּܟﺶ𐐤ﶨࠔ𐰷𢡶𧐎𐭈𞸏𢢘𦘼ﶻ𩏃𦽨𞺎𠛘𐠲䉊ﰸﭳᣲ𐦚("epicaricacy","perseverate")
-     ﺭ异𞸐𐤔ﭞﰣﺁں𝕌𨿩𞸇뻛𐬑𥰫嬭ﱌ𢽁𐡆𧪮Ꝫﴹ뙫𢤴퉊ﳦﲣפּܟﺶ𐐤ﶨࠔ𐰷𢡶𧐎𐭈𞸏𢢘𦘼ﶻ𩏃𦽨𞺎𠛘𐠲䉊ﰸﭳᣲﺃ.ﺭ异𞸐𐤔ﭞﰣﺁں𝕌𨿩𞸇뻛𐬑𥰫嬭ﱌ𢽁𐡆𧪮Ꝫﴹ뙫𢤴퉊ﳦﲣפּܟﺶ𐐤ﶨࠔ𐰷𢡶𧐎𐭈𞸏𢢘𦘼ﶻ𩏃𦽨𞺎𠛘𐠲䉊ﰸﭳᣲ𐠯("Codswallop")
-    # Created by pyminifier (https://github.com/liftoff/pyminifier)
+      $ pyminifier --nonlatin --replacement-length=50 tests/files/tumult.py
+      #!/usr/bin/env python3
+      #!/usr/bin/env python3
+      𐤈𧤐앣油𐬮𤋝ﶺ𦳾𬿔𞡃𐳨ٷ뇂噣𓌸𞤟唺얓𐡀ტ𭰩𞸂礷𪪈ᝪ𨟍𤧜ﺥ𐫆ڽดﭪ𤟨侐𤌹𨇜𨎺𐦐ﶣ𠫖𣹁ﱰඟ硖𫒓𠿩ڍ䍝𞸙𨿱=ImportError
+      𐤈𧤐앣油𐬮𤋝ﶺ𦳾𬿔𞡃𐳨ٷ뇂噣𓌸𞤟唺얓𐡀ტ𭰩𞸂礷𪪈ᝪ𨟍𤧜ﺥ𐫆ڽดﭪ𤟨侐𤌹𨇜𨎺𐦐ﶣ𠫖𣹁ﱰඟ硖𫒓𠿩ڍ䍝𞸙𞸀=print
+      𐤈𧤐앣油𐬮𤋝ﶺ𦳾𬿔𞡃𐳨ٷ뇂噣𓌸𞤟唺얓𐡀ტ𭰩𞸂礷𪪈ᝪ𨟍𤧜ﺥ𐫆ڽดﭪ𤟨侐𤌹𨇜𨎺𐦐ﶣ𠫖𣹁ﱰඟ硖𫒓𠿩ڍ䍝𞸙𔘮=False
+      𐤈𧤐앣油𐬮𤋝ﶺ𦳾𬿔𞡃𐳨ٷ뇂噣𓌸𞤟唺얓𐡀ტ𭰩𞸂礷𪪈ᝪ𨟍𤧜ﺥ𐫆ڽดﭪ𤟨侐𤌹𨇜𨎺𐦐ﶣ𠫖𣹁ﱰඟ硖𫒓𠿩ڍ䍝𞸙𡓈=object
+      try:
+       import demiurgic
+      except 𐤈𧤐앣油𐬮𤋝ﶺ𦳾𬿔𞡃𐳨ٷ뇂噣𓌸𞤟唺얓𐡀ტ𭰩𞸂礷𪪈ᝪ𨟍𤧜ﺥ𐫆ڽดﭪ𤟨侐𤌹𨇜𨎺𐦐ﶣ𠫖𣹁ﱰඟ硖𫒓𠿩ڍ䍝𞸙𨿱:
+       𐤈𧤐앣油𐬮𤋝ﶺ𦳾𬿔𞡃𐳨ٷ뇂噣𓌸𞤟唺얓𐡀ტ𭰩𞸂礷𪪈ᝪ𨟍𤧜ﺥ𐫆ڽดﭪ𤟨侐𤌹𨇜𨎺𐦐ﶣ𠫖𣹁ﱰඟ硖𫒓𠿩ڍ䍝𞸙𞸀("Warning: You're not demiurgic. Actually, I think that's normal.")
+      try:
+       import mystificate
+      except 𐤈𧤐앣油𐬮𤋝ﶺ𦳾𬿔𞡃𐳨ٷ뇂噣𓌸𞤟唺얓𐡀ტ𭰩𞸂礷𪪈ᝪ𨟍𤧜ﺥ𐫆ڽดﭪ𤟨侐𤌹𨇜𨎺𐦐ﶣ𠫖𣹁ﱰඟ硖𫒓𠿩ڍ䍝𞸙𨿱:
+       𐤈𧤐앣油𐬮𤋝ﶺ𦳾𬿔𞡃𐳨ٷ뇂噣𓌸𞤟唺얓𐡀ტ𭰩𞸂礷𪪈ᝪ𨟍𤧜ﺥ𐫆ڽดﭪ𤟨侐𤌹𨇜𨎺𐦐ﶣ𠫖𣹁ﱰඟ硖𫒓𠿩ڍ䍝𞸙𞸀("Warning: Dark voodoo may be unreliable.")
+      𐤈𧤐앣油𐬮𤋝ﶺ𦳾𬿔𞡃𐳨ٷ뇂噣𓌸𞤟唺얓𐡀ტ𭰩𞸂礷𪪈ᝪ𨟍𤧜ﺥ𐫆ڽดﭪ𤟨侐𤌹𨇜𨎺𐦐ﶣ𠫖𣹁ﱰඟ硖𫒓𠿩ڍ䍝𞸙ﭺ=𐤈𧤐앣油𐬮𤋝ﶺ𦳾𬿔𞡃𐳨ٷ뇂噣𓌸𞤟唺얓𐡀ტ𭰩𞸂礷𪪈ᝪ𨟍𤧜ﺥ𐫆ڽดﭪ𤟨侐𤌹𨇜𨎺𐦐ﶣ𠫖𣹁ﱰඟ硖𫒓𠿩ڍ䍝𞸙𔘮
+      class 𐤈𧤐앣油𐬮𤋝ﶺ𦳾𬿔𞡃𐳨ٷ뇂噣𓌸𞤟唺얓𐡀ტ𭰩𞸂礷𪪈ᝪ𨟍𤧜ﺥ𐫆ڽดﭪ𤟨侐𤌹𨇜𨎺𐦐ﶣ𠫖𣹁ﱰඟ硖𫒓𠿩ڍ䍝𞸙ﭛ(𐤈𧤐앣油𐬮𤋝ﶺ𦳾𬿔𞡃𐳨ٷ뇂噣𓌸𞤟唺얓𐡀ტ𭰩𞸂礷𪪈ᝪ𨟍𤧜ﺥ𐫆ڽดﭪ𤟨侐𤌹𨇜𨎺𐦐ﶣ𠫖𣹁ﱰඟ硖𫒓𠿩ڍ䍝𞸙𡓈):
+       def __init__(self,*args,**kwargs):
+        pass
+       def 𐤈𧤐앣油𐬮𤋝ﶺ𦳾𬿔𞡃𐳨ٷ뇂噣𓌸𞤟唺얓𐡀ტ𭰩𞸂礷𪪈ᝪ𨟍𤧜ﺥ𐫆ڽดﭪ𤟨侐𤌹𨇜𨎺𐦐ﶣ𠫖𣹁ﱰඟ硖𫒓𠿩ڍ䍝𞸙𐳈(self,dactyl):
+        𐤈𧤐앣油𐬮𤋝ﶺ𦳾𬿔𞡃𐳨ٷ뇂噣𓌸𞤟唺얓𐡀ტ𭰩𞸂礷𪪈ᝪ𨟍𤧜ﺥ𐫆ڽดﭪ𤟨侐𤌹𨇜𨎺𐦐ﶣ𠫖𣹁ﱰඟ硖𫒓𠿩ڍ䍝𞸙𡹯=demiurgic.palpitation(dactyl)
+        𐤈𧤐앣油𐬮𤋝ﶺ𦳾𬿔𞡃𐳨ٷ뇂噣𓌸𞤟唺얓𐡀ტ𭰩𞸂礷𪪈ᝪ𨟍𤧜ﺥ𐫆ڽดﭪ𤟨侐𤌹𨇜𨎺𐦐ﶣ𠫖𣹁ﱰඟ硖𫒓𠿩ڍ䍝𞸙籷=mystificate.dark_voodoo(𐤈𧤐앣油𐬮𤋝ﶺ𦳾𬿔𞡃𐳨ٷ뇂噣𓌸𞤟唺얓𐡀ტ𭰩𞸂礷𪪈ᝪ𨟍𤧜ﺥ𐫆ڽดﭪ𤟨侐𤌹𨇜𨎺𐦐ﶣ𠫖𣹁ﱰඟ硖𫒓𠿩ڍ䍝𞸙𡹯)
+        return 𐤈𧤐앣油𐬮𤋝ﶺ𦳾𬿔𞡃𐳨ٷ뇂噣𓌸𞤟唺얓𐡀ტ𭰩𞸂礷𪪈ᝪ𨟍𤧜ﺥ𐫆ڽดﭪ𤟨侐𤌹𨇜𨎺𐦐ﶣ𠫖𣹁ﱰඟ硖𫒓𠿩ڍ䍝𞸙籷
+       def 𐤈𧤐앣油𐬮𤋝ﶺ𦳾𬿔𞡃𐳨ٷ뇂噣𓌸𞤟唺얓𐡀ტ𭰩𞸂礷𪪈ᝪ𨟍𤧜ﺥ𐫆ڽดﭪ𤟨侐𤌹𨇜𨎺𐦐ﶣ𠫖𣹁ﱰඟ硖𫒓𠿩ڍ䍝𞸙𐬤(self,whatever):
+        𐤈𧤐앣油𐬮𤋝ﶺ𦳾𬿔𞡃𐳨ٷ뇂噣𓌸𞤟唺얓𐡀ტ𭰩𞸂礷𪪈ᝪ𨟍𤧜ﺥ𐫆ڽดﭪ𤟨侐𤌹𨇜𨎺𐦐ﶣ𠫖𣹁ﱰඟ硖𫒓𠿩ڍ䍝𞸙𞸀(whatever)
+      if __name__=="__main__":
+       𐤈𧤐앣油𐬮𤋝ﶺ𦳾𬿔𞡃𐳨ٷ뇂噣𓌸𞤟唺얓𐡀ტ𭰩𞸂礷𪪈ᝪ𨟍𤧜ﺥ𐫆ڽดﭪ𤟨侐𤌹𨇜𨎺𐦐ﶣ𠫖𣹁ﱰඟ硖𫒓𠿩ڍ䍝𞸙𞸀("Forming...")
+       𐤈𧤐앣油𐬮𤋝ﶺ𦳾𬿔𞡃𐳨ٷ뇂噣𓌸𞤟唺얓𐡀ტ𭰩𞸂礷𪪈ᝪ𨟍𤧜ﺥ𐫆ڽดﭪ𤟨侐𤌹𨇜𨎺𐦐ﶣ𠫖𣹁ﱰඟ硖𫒓𠿩ڍ䍝𞸙ﰭ=𐤈𧤐앣油𐬮𤋝ﶺ𦳾𬿔𞡃𐳨ٷ뇂噣𓌸𞤟唺얓𐡀ტ𭰩𞸂礷𪪈ᝪ𨟍𤧜ﺥ𐫆ڽดﭪ𤟨侐𤌹𨇜𨎺𐦐ﶣ𠫖𣹁ﱰඟ硖𫒓𠿩ڍ䍝𞸙ﭛ("epicaricacy","perseverate")
+       𐤈𧤐앣油𐬮𤋝ﶺ𦳾𬿔𞡃𐳨ٷ뇂噣𓌸𞤟唺얓𐡀ტ𭰩𞸂礷𪪈ᝪ𨟍𤧜ﺥ𐫆ڽดﭪ𤟨侐𤌹𨇜𨎺𐦐ﶣ𠫖𣹁ﱰඟ硖𫒓𠿩ڍ䍝𞸙ﰭ.𐤈𧤐앣油𐬮𤋝ﶺ𦳾𬿔𞡃𐳨ٷ뇂噣𓌸𞤟唺얓𐡀ტ𭰩𞸂礷𪪈ᝪ𨟍𤧜ﺥ𐫆ڽดﭪ𤟨侐𤌹𨇜𨎺𐦐ﶣ𠫖𣹁ﱰඟ硖𫒓𠿩ڍ䍝𞸙𐬤("Codswallop")
+      # Created by pyminifier (https://github.com/dzhuang/pyminifier3)
 
 Indices and tables
 ==================
