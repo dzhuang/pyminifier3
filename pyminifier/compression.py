@@ -44,7 +44,7 @@ import shutil
 import tempfile
 
 # Import our own supporting modules
-from . import analyze, constants, minification, obfuscate, token_utils
+from . import analyze, minification, obfuscate, token_utils
 
 
 def bz2_pack(source):
@@ -233,15 +233,19 @@ def zip_pack(filepath, options):
     filename = os.path.split(filepath)[1]
     if not path:
         path = os.getcwd()
-    main_py = path + "/__main__.py"
-    if os.path.exists(main_py):
-        # There's an existing __main__.py, use it
-        z.write(main_py, "__main__.py")
+    if filename == "__main__.py":
         z.writestr(filename, source)
     else:
-        # No __main__.py so we rename our main script to be the __main__.py
-        # This is so it will still execute as a zip
-        z.writestr("__main__.py", source)
+        main_py = path + "/__main__.py"
+
+        # There's an existing __main__.py, use it
+        if os.path.exists(main_py):
+            z.write(main_py, "__main__.py")
+            z.writestr(filename, source)
+        else:
+            # No __main__.py so we rename our main script to be the __main__.py
+            # This is so it will still execute as a zip
+            z.writestr("__main__.py", source)
 
     # Now write any required modules into the zip as well
     local_modules = analyze.enumerate_local_modules(primary_tokens, path)
@@ -258,12 +262,15 @@ def zip_pack(filepath, options):
         if module == filename:
             continue
 
+        if module == "__main__.py":
+            continue
+
         # Add the filesize to our total
         cumulative_size += os.path.getsize(os.path.join(path, module))
         # Also record that we've added it to the archive
         included_modules.append(module)
         # Minify these files too
-        with open(os.path.join(path, module)) as f:
+        with open(os.path.join(path, module), encoding="utf-8") as f:
             source = f.read()
         tokens = token_utils.listified_tokenizer(source)
         maybe_more_modules = analyze.enumerate_local_modules(tokens, path)
@@ -286,7 +293,10 @@ def zip_pack(filepath, options):
             )
         # Convert back to text
         result = token_utils.untokenize(tokens)
-        result += "{}\n".format(constants.RESULT_FOOTER)
+
+        from . import RESULT_FOOTER
+
+        result += "{}\n".format(RESULT_FOOTER)
         # Write out to a temporary file to add to our zip
         z.writestr(module, result)
 

@@ -112,7 +112,7 @@ import re
 import sys
 from collections.abc import Iterable
 
-from . import compression, constants, minification, obfuscate, token_utils
+from . import compression, minification, obfuscate, token_utils
 
 lzma = False
 try:
@@ -127,6 +127,8 @@ os_name = os.name
 multiline_indicator = re.compile("\\\\(\s*#.*)?\n")  # noqa
 
 # The test.+() functions below are for testing pyminifier...
+
+RESULT_FOOTER = "# Created by pyminifier (https://github.com/dzhuang/pyminifier3)"
 
 
 def test_decorator(f):
@@ -291,7 +293,7 @@ def pyminify(options, files):
                 result = compression.gz_pack(result)
             elif lzma and options.lzma:
                 result = compression.lzma_pack(result)
-            result += "{}\n".format(constants.RESULT_FOOTER)
+            result += "{}\n".format(RESULT_FOOTER)
             # Either save the result to the output file or print it to stdout
             if not os.path.exists(options.destdir):
                 os.mkdir(options.destdir)
@@ -351,7 +353,7 @@ def pyminify(options, files):
             result = compression.gz_pack(result)
         elif lzma and options.lzma:
             result = compression.lzma_pack(result)
-        result += "{}\n".format(constants.RESULT_FOOTER)
+        result += "{}\n".format(RESULT_FOOTER)
         # Either save the result to the output file or print it to stdout
         if options.outfile:
             with io.open(options.outfile, "w", encoding="utf-8") as f:
