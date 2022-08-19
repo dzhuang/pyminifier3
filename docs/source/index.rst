@@ -73,16 +73,18 @@ arguments:
                           The length of the random names that will be used when
                             obfuscating identifiers.
     --nonlatin            Use non-latin (unicode) characters in obfuscation
-                            (Python 3 only).  WARNING: This results in some
+                              WARNING: This results in some
                             SERIOUSLY hard-to-read code.
     --prepend=<file path>
                           Prepend the text in this file to the top of our
                             output.  e.g. A copyright notice.
 
 For the examples below we'll be minifying, obfuscating, and compressing the
-following totally made-up Python script (saved to ``/tmp/tumult.py``)::
+following totally made-up Python script (in repository ``tests/files/tumult.py``).
 
-    #!/usr/bin/env python
+.. code-block:: python
+
+    #!/usr/bin/env python3
     """
     tumult.py - Because everyone needs a little chaos every now and again.
     """
@@ -97,7 +99,8 @@ following totally made-up Python script (saved to ``/tmp/tumult.py``)::
         print("Warning: Dark voodoo may be unreliable.")
 
     # Globals
-    ATLAS = False # Nothing holds up the world by default
+    ATLAS = False  # Nothing holds up the world by default
+
 
     class Foo(object):
         """
@@ -107,7 +110,7 @@ following totally made-up Python script (saved to ``/tmp/tumult.py``)::
         """
         def __init__(self, *args, **kwargs):
             """
-            The initialization vector whereby the ineffiably obstreperous
+            The initialization vector whereby the ineffably obstreperous
             becomes paramount.
             """
             # TODO.  BTW: What happens if we remove that docstring? :)
@@ -116,7 +119,7 @@ following totally made-up Python script (saved to ``/tmp/tumult.py``)::
             """
             A vainglorious implementation of bedizenment.
             """
-            inception = demiurgic.palpitation(dactyl) # Note the imported call
+            inception = demiurgic.palpitation(dactyl)  # Note the imported call
             demarcation = mystificate.dark_voodoo(inception)
             return demarcation
 
@@ -126,20 +129,29 @@ following totally made-up Python script (saved to ``/tmp/tumult.py``)::
             """
             print(whatever)
 
+
     if __name__ == "__main__":
         print("Forming...")
         f = Foo("epicaricacy", "perseverate")
         f.test("Codswallop")
 
+
 By default pyminifier will perform basic minification and print the resulting
 code to stdout:
 
-.. note:: The tumult.py script is 1358 bytes.  Remember that.
+.. note:: The tumult.py script is 1411 bytes.  Remember that.
+
+Run the following command in your console:
 
 .. code-block:: sh
 
-    $ pyminifier /tmp/tumult.py
-    #!/usr/bin/env python
+    $ pyminifier tests/files/tumult.py
+
+We will get:
+
+.. code-block:: python
+
+    #!/usr/bin/env python3
     try:
      import demiurgic
     except ImportError:
@@ -162,59 +174,68 @@ code to stdout:
      print("Forming...")
      f=Foo("epicaricacy","perseverate")
      f.test("Codswallop")
-    # Created by pyminifier.py (https://github.com/liftoff/pyminifier)
+    # Created by pyminifier (https://github.com/dzhuang/pyminifier3)
 
-This reduced the size of tumult.py from 1358 bytes to 640 bytes.  Not bad!
+This reduced the size of tumult.py from 1411 bytes to 700 bytes.  Not bad!
 
 Minifying by itself can reduce code size considerably but pyminifier can go
 further by obfuscating the code.  What that means is that it will replace the
-names of things like variables and functions to the smallest possible size:
+names of things like variables and functions to the smallest possible size, with:
 
 .. code-block:: sh
 
-    $ pyminifier --obfuscate /tmp/tumult.py
-    #!/usr/bin/env python
-    T=ImportError
-    q=print
-    m=False
-    O=object
-    try:
-     import demiurgic
-    except T:
-     q("Warning: You're not demiurgic. Actually, I think that's normal.")
-    try:
-     import mystificate
-    except T:
-     q("Warning: Dark voodoo may be unreliable.")
-    Q=m
-    class U(O):
-     def __init__(self,*args,**kwargs):
-      pass
-     def B(self,dactyl):
-      G=demiurgic.palpitation(dactyl)
-      w=mystificate.dark_voodoo(G)
-      return w
-     def k(self,whatever):
-      q(whatever)
-    if __name__=="__main__":
-     q("Forming...")
-     f=U("epicaricacy","perseverate")
-     f.test("Codswallop")
-    # Created by pyminifier.py (https://github.com/liftoff/pyminifier)
+    pyminifier --obfuscate tests/files/tumult.py
+
+We will get:
+
+.. code-block:: python
+
+      #!/usr/bin/env python3
+      撐=ImportError
+      ﬡ=print
+      ഭ=False
+      �=object
+      try:
+       import demiurgic
+      except 撐:
+       ﬡ("Warning: You're not demiurgic. Actually, I think that's normal.")
+      try:
+       import mystificate
+      except 撐:
+       ﬡ("Warning: Dark voodoo may be unreliable.")
+      ڹ=ഭ
+      class �(�):
+       def __init__(self,*args,**kwargs):
+        pass
+       def ߨ(self,dactyl):
+        ݘ=demiurgic.palpitation(dactyl)
+        �=mystificate.dark_voodoo(ݘ)
+        return �
+       def �(self,whatever):
+        ﬡ(whatever)
+      if __name__=="__main__":
+       ﬡ("Forming...")
+       f=�("epicaricacy","perseverate")
+       f.test("Codswallop")
+      # Created by pyminifier (https://github.com/dzhuang/pyminifier3)
+
 
 That's all fine and good but pyminifier can go the extra mile and also
 *compress* your code using gzip, bz2, or even lzma using a special container:
 
 .. code-block:: sh
 
-    $ pyminifier --obfuscate --gzip /tmp/tumult.py
+    $ pyminifier --obfuscate --gzip tests/files/tumult.py
     #!/usr/bin/env python3
     import zlib, base64
-    exec(zlib.decompress(base64.b64decode('eJx1kcFOwzAMhu95ClMO66apu0/KAQEbE5eJC+IUpa27haVJ5Ljb+vakLYJx4JAoiT/7/+3c3626SKvSuBW6M4Sej96Jq9y1wRM/E3kSexnIOBZObrSNKI7Sl59YsWDq1wLMiEKNrenoYCqB1woDwzXF9nn2rskZd1jDh+9mhOD8DVvAQ8WdtrZfwg74aNwp7ZpnMXHUaltk878ybR/ZNKbSjP8JPWk6wdn72ntodQ8lQucIrdGlxaHgq3QgKqtjhCY/zlN6jQ0oZZxhpfKItlkuNB3icrE4XYbDwEBICRP6NjG1rri3YyzK356CtsGwZuNd/o0kYitvrBd18qgmj3kcwoTckYPtJPAyCVzSKPCMNErs85+rMINdp1tUSspMqVYbp1Q2DWKTJpcGURRDr9DIJs8wJFlKq+qzZRaQ4lAnVRuJgjFynj36Ol7SX/iQXr8ANfezCw==')))
-    # Created by pyminifier.py (https://github.com/liftoff/pyminifier)
+    exec(zlib.decompress(base64.b64decode('eJx9kb1u1EAUhXs/xcUUcVYrb0EXaQoERMoTIKrRrH13M9nxzOjO9S7u6PhrUlCiKKKjoKAMUsSrIEVCULGPwB2bn9BQ2LJmvnvOPcd37yz6RIul9Qv0W4gDnwZ/r9iff3ipTroYiB8RBSq+vr1QkaznYn/x7rU6Ni6hUJefVVieYcMF03BUgB1HoMXO9rS2T
+    YFPG4wMWU+uRaUqHxvy1q+P4EnoDwjBh1sDNdxvuDfODXM4AT61fiNvwwdJOOqMq8vDf726IbFd2cYw/tftoaENbENoQ4DODLBE6D2hs2bpMKt+uXymcriicSYluPn0osoBD0WpxRVobb1lrauEbjWfGVqn+Wy22eWPzECUqQn9cfVxolrT8ODG22+v3qu/KaNx0bJhG3z1CxJm/+b8Wt3KU7eys552rkQgM4Tck
+    x/Ryez78+vJbCc14RZptMvZ/xwUNq/vTYdaK1Vq3RnrtS5/d3QszUpHdZ1rgJXK0UuMsgPJ0wzlvIxIKWuJ4sjUjImr8kFo007+Vohy+hM5TN3z')))
+    # Created by pyminifier (https://github.com/dzhuang/pyminifier3)
 
-That created a 572 byte file...  Not much saved over basic minification
-which producted a 640 byte file.  This is because the input file was so small
+
+That created a 696 byte file...  Not much saved over basic minification
+which producted a 700 byte file.  This is because the input file was so small
 to begin with.  There's potential to save a lot more space with larger scripts.
 Why the heck would you ever want to use such a strange method of compressing
 Python code?  Only one reason:

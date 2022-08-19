@@ -185,8 +185,6 @@ Minifying by itself can reduce code size considerably but pyminifier can go
 further by obfuscating the code.  What that means is that it will replace the
 names of things like variables and functions to the smallest possible size.
 
-To see more examples of pyminifier in action (e.g. compression features) see the
-`full documentation <http://liftoff.github.io/pyminifier/>`_
 
 Special Sauce
 -------------
